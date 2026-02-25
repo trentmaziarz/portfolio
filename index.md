@@ -4,8 +4,7 @@ title: Home
 ---
 
 <div class="home-photo">
-  <span class="photo-placeholder">Your photo</span>
-  <!-- Replace the span above with: <img src="/assets/img/headshot.jpg" alt="Trent Maziarz"> -->
+  <img src="/assets/img/headshot.jpg" alt="Trent Maziarz">
 </div>
 
 <div class="about-text">
