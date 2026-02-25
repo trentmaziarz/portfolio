@@ -1,0 +1,21 @@
+---
+layout: default
+title: Projects
+---
+
+<h2 class="page-title">Projects</h2>
+
+{% for project in site.projects reversed %}
+<div class="project-entry">
+  <div class="project-label">{{ project.type }}</div>
+  <h3><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h3>
+  <p>{{ project.description }}</p>
+  {% if project.tags %}
+  <div class="project-tags">
+    {% for tag in project.tags %}
+    <span class="ptag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endfor %}

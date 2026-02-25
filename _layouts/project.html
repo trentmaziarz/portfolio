@@ -1,0 +1,17 @@
+---
+layout: default
+---
+<article>
+  <div class="project-label">{{ page.type }}</div>
+  <h2 class="page-title">{{ page.title }}</h2>
+  <div class="page-text">
+    {{ content }}
+  </div>
+  {% if page.tags %}
+  <div class="project-tags" style="margin-top: 1.5rem;">
+    {% for tag in page.tags %}
+    <span class="ptag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</article>

@@ -1,0 +1,32 @@
+- heading: Education
+  entries:
+    - title: "Ph.D., Digital History / Computer Science"
+      institution: "University Name"
+      dates: "2026 – Present"
+      description: "Research focus: computational methods for historical analysis"
+
+    - title: "B.A. / B.S., History & Computer Science"
+      institution: "University Name"
+      dates: "2022 – 2025"
+      description: ""
+
+- heading: Experience
+  entries:
+    - title: "Research Assistant"
+      institution: "Digital Humanities Lab, University"
+      dates: "2024 – 2025"
+      description: "Developed tools for automated text analysis of early modern printed works."
+
+- heading: Skills & Tools
+  entries:
+    - title: "Languages"
+      dates: ""
+      description: "Python, JavaScript, R, SQL, HTML/CSS"
+
+    - title: "Frameworks"
+      dates: ""
+      description: "D3.js, spaCy, NLTK, Leaflet, Django, React"
+
+    - title: "Methods"
+      dates: ""
+      description: "NLP, Network Analysis, GIS, OCR, Text Encoding (TEI)"

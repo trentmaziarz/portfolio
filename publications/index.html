@@ -1,0 +1,24 @@
+---
+layout: default
+title: Publications
+---
+
+<h2 class="page-title">Publications</h2>
+
+{% for year_group in site.data.publications %}
+<div class="pub-year">{{ year_group.year }}</div>
+
+{% for pub in year_group.entries %}
+<div class="pub-entry">
+  <div class="pub-title">{{ pub.title }}</div>
+  <div class="pub-authors">{{ pub.authors }}</div>
+  <div class="pub-venue">{{ pub.venue }}</div>
+  <div class="pub-links">
+    {% if pub.pdf %}<a href="{{ pub.pdf }}">PDF</a>{% endif %}
+    {% if pub.doi %}<a href="https://doi.org/{{ pub.doi }}">DOI</a>{% endif %}
+    {% if pub.code %}<a href="{{ pub.code }}">Code</a>{% endif %}
+    {% if pub.slides %}<a href="{{ pub.slides }}">Slides</a>{% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endfor %}

@@ -1,0 +1,23 @@
+- year: 2026
+  entries:
+    - title: "Computational Approaches to Manuscript Provenance Analysis"
+      authors: "Maziarz, T., & Collaborator, A."
+      venue: "Digital Humanities Quarterly, 20(1)"
+      pdf: "/assets/papers/maziarz-2026-provenance.pdf"
+      doi: ""
+
+- year: 2025
+  entries:
+    - title: "Network Analysis of Epistolary Communities in the Late Renaissance"
+      authors: "Maziarz, T."
+      venue: "Proceedings of DH2025, Lisbon"
+      pdf: ""
+      slides: ""
+      code: ""
+
+    - title: "HistoGraph: A Framework for Temporal Network Visualization"
+      authors: "Maziarz, T., & Collaborator, B."
+      venue: "Journal of Open Humanities Data, 11(2)"
+      pdf: ""
+      doi: ""
+      code: "https://github.com/YOUR-USERNAME/histograph"
