@@ -543,6 +543,62 @@ strong { font-weight: 600; }
 }
 
 /* ═══════════════════════════════════════
+   UMARING WEBRING
+   ═══════════════════════════════════════ */
+   .umaring-wrap {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--parchment-edge);
+    text-align: center;
+  }
+  
+  /* Override umaring's default styles to match manuscript theme */
+  .umaring-wrap #umaring {
+    font-family: var(--font-body) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .umaring-wrap #umaring a {
+    font-family: var(--font-body) !important;
+    font-size: 0.88rem !important;
+    color: var(--blue) !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(30, 58, 110, 0.2);
+    padding-bottom: 1px;
+    transition: border-color 0.2s, color 0.2s;
+    background: transparent !important;
+  }
+  
+  .umaring-wrap #umaring a:hover {
+    border-bottom-color: var(--blue) !important;
+    color: var(--red) !important;
+  }
+  
+  .umaring-wrap #umaring span,
+  .umaring-wrap #umaring p,
+  .umaring-wrap #umaring div {
+    font-family: var(--font-body) !important;
+    font-size: 0.85rem !important;
+    color: var(--ink-muted) !important;
+  }
+  
+  /* Fallback label if script hasn't loaded */
+  .umaring-label {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--ink-faint);
+    margin-bottom: 0.35rem;
+  }
+
+/* ═══════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════ */
 @media (max-width: 700px) {

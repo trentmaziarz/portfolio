@@ -26,3 +26,5 @@ title: Home
   <a href="https://github.com/YOUR-USERNAME">GitHub</a>
   <a href="mailto:your@email.com">Email</a>
 </div>
+
+<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=trentmaziarz"></script>
