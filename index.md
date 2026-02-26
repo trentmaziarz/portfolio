@@ -12,7 +12,7 @@ title: Home
 
 <p>I am drawn to this work because historical sources are messy, incomplete, and deeply human - exactly the kind of data that demands both computational rigor and interpretive sensitivity. I build tools and frameworks that try to honor both, creating bridges between the humanities and computer science that serve scholars across disciplines.</p>
 
-<p>Additional information about my work can be found in the <a href="/projects/">projects</a> and <a href="/publications/">publications</a> sections. For inquiries or potential collaborations, feel free to <a href="mailto:your@email.com">get in touch</a>.</p>
+<p>Additional information about my work can be found in the <a href="/projects/">projects</a> and <a href="/publications/">publications</a> sections. For inquiries or potential collaborations, feel free to <a href="mailto:trentmaziarz@umass.edu">get in touch</a>.</p>
 </div>
 
 <div class="section-label">Research Interests</div>
