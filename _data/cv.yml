@@ -1,21 +1,26 @@
 - heading: Education
   entries:
     - title: "Ph.D., Digital History / Computer Science"
-      institution: "University Name"
-      dates: "2026 – Present"
+      institution: "Clemson University"
+      dates: "Expected Fall 2027 Cohort"
       description: "Research focus: computational methods for historical analysis"
 
-    - title: "B.A. / B.S., History & Computer Science"
-      institution: "University Name"
-      dates: "2022 – 2025"
+    - title: "B.S., Computer Science"
+      institution: "University of Massachusetts - Amherst"
+      dates: "2023 – 2026"
+      description: ""
+
+    - title: "A.S., Engineering"
+      institution: "Springfield Technical Community College"
+      dates: "2022-2023"
       description: ""
 
 - heading: Experience
   entries:
-    - title: "Research Assistant"
-      institution: "Digital Humanities Lab, University"
-      dates: "2024 – 2025"
-      description: "Developed tools for automated text analysis of early modern printed works."
+    - title: "Course Assistant"
+      institution: "Reasoning Under Uncertainty, UMASS"
+      dates: "2025"
+      description: ""
 
 - heading: Skills & Tools
   entries:
