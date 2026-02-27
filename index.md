@@ -27,5 +27,7 @@ title: Home
   <a href="mailto:trentmaziarz@umass.edu">Email</a>
 </div>
 
-<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=devaanand19"></script>
-<div id="umaring"></div>
+<div class="umaring-wrap">
+  <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=devaanand19"></script>
+  <div id="umaring"></div>
+</div>
