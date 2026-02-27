@@ -28,3 +28,4 @@ title: Home
 </div>
 
 <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=trentmaziarz"></script>
+<div id="umaring"></div>
