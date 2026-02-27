@@ -1,16 +1,16 @@
-# The Sallet Portfolio
+# Portfolio
 
-My Academic portfolio — a manuscript-themed Jekyll site for GitHub Pages.
+My Academic portfolio - a manuscript-themed Jekyll site for GitHub Pages.
 
-## Quick Start in case I forget later
+## Quick Start if you want this portfolio for yourself
 
 1. Push this entire folder to a GitHub repo named `your-username.github.io` (or any repo with GitHub Pages enabled)
 2. In repo Settings → Pages, set source to "Deploy from a branch" → `main` → `/ (root)`
 3. Your site will be live at `https://your-username.github.io`
 
-## Custom Domain Setup
+## Domain Setup
 
-1. The `CNAME` file is already set to `trentmaziarz.com`
+1. My `CNAME` file is already set to `trentmaziarz.com`
 2. At your domain registrar, add these DNS records:
    - **A records** pointing to GitHub's IPs:
      - `185.199.108.153`
@@ -18,7 +18,7 @@ My Academic portfolio — a manuscript-themed Jekyll site for GitHub Pages.
      - `185.199.110.153`
      - `185.199.111.153`
    - **CNAME record**: `www` → `your-username.github.io`
-3. In repo Settings → Pages → Custom domain, enter `trentmaziarz.com`
+3. In repo Settings → Pages → Custom domain, enter `trentmaziarz.com` (or whatever *your* domain is)
 4. Check "Enforce HTTPS"
 
 ## How to Add Content
@@ -51,7 +51,7 @@ Full project description in Markdown.
 ```
 
 ### Add a publication
-Edit `_data/publications.yml` — add an entry under the right year:
+Edit `_data/publications.yml` - add an entry under the right year:
 
 ```yaml
 - title: "Your Paper Title"
@@ -72,6 +72,14 @@ Replace the placeholder in `index.md` with:
 </div>
 ```
 And put your photo at `assets/img/headshot.jpg`.
+
+### Exclude the umaring
+
+```html
+<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=trentmaziarz"></script>
+<div id="umaring"></div>
+```
+This is unique to my site due to my affilation to UMASS
 
 ## File Structure
 
