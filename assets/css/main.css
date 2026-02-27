@@ -546,33 +546,34 @@ strong { font-weight: 600; }
    UMARING WEBRING
    ═══════════════════════════════════════ */
 .umaring-wrap {
+  text-align: center;
   margin-top: 2rem;
-  padding-top: 1.5rem;
+  padding: 1.25rem 0 0.5rem;
   border-top: 1px solid var(--parchment-edge);
-  text-align: center;
 }
 
-#umaring {
+.ring-colophon {
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  font-style: italic;
   color: var(--ink-faint);
-  text-align: center;
-  line-height: 2;
+  line-height: 1.8;
 }
 
-#umaring a {
+.ring-colophon a {
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  font-style: italic;
   color: var(--blue);
   text-decoration: none;
-  border-bottom: 1px solid rgba(30, 58, 110, 0.2);
+  border-bottom: 1px dotted rgba(30, 58, 110, 0.3);
   padding-bottom: 1px;
   transition: border-color 0.2s, color 0.2s;
 }
 
-#umaring a:hover {
-  border-bottom-color: var(--blue);
+.ring-colophon a:hover {
   color: var(--red);
+  border-bottom-style: solid;
 }
 
 /* ═══════════════════════════════════════
