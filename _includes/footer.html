@@ -1,4 +1,5 @@
 <footer class="site-footer">
+  {% if page.url == '/' %}
   <div class="ring-colophon">
     <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=devaanand19"></script>
     <div id="umaring" style="display:none;"></div>
@@ -20,5 +21,6 @@
       }
     </script>
   </div>
+  {% endif %}
   <div class="copyright">© {{ 'now' | date: '%Y' }} {{ site.title }}</div>
 </footer>
