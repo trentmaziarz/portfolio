@@ -530,38 +530,26 @@ strong { font-weight: 600; }
 .cv-info p { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.1rem; }
 
 /* ═══════════════════════════════════════
-   FOOTER
+   FOOTER & UMARING WEBRING
    ═══════════════════════════════════════ */
 .site-footer {
   text-align: center;
   padding-top: 1.5rem;
   margin-top: 2rem;
   border-top: 1px solid var(--parchment-edge);
-  font-size: 0.82rem;
-  color: var(--ink-faint);
-  font-style: italic;
 }
 
-/* ═══════════════════════════════════════
-   UMARING WEBRING
-   ═══════════════════════════════════════ */
-.umaring-wrap {
-  text-align: center;
-  margin-top: 2rem;
-  padding: 1.25rem 0 0.5rem;
-  border-top: 1px solid var(--parchment-edge);
-}
-
-.ring-colophon {
-  font-family: var(--font-body);
+.site-footer .ring-colophon {
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: 0.82rem;
   font-style: italic;
   color: var(--ink-faint);
   line-height: 1.8;
+  margin-bottom: 1rem;
 }
 
-.ring-colophon a {
-  font-family: var(--font-body);
+.site-footer .ring-colophon a {
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: 0.82rem;
   font-style: italic;
   color: var(--blue);
@@ -571,9 +559,15 @@ strong { font-weight: 600; }
   transition: border-color 0.2s, color 0.2s;
 }
 
-.ring-colophon a:hover {
+.site-footer .ring-colophon a:hover {
   color: var(--red);
   border-bottom-style: solid;
+}
+
+.site-footer .copyright {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  font-style: italic;
 }
 
 /* ═══════════════════════════════════════
