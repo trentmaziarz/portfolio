@@ -26,25 +26,3 @@ title: Home
   <a href="https://github.com/trentmaziarz">GitHub</a>
   <a href="mailto:trentmaziarz@umass.edu">Email</a>
 </div>
-
-<div class="umaring-wrap">
-  <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=devaanand19"></script>
-  <div id="umaring" style="display:none;"></div>
-  <div id="umaring-colophon" class="ring-colophon"></div>
-  <script>
-    function formatRing() {
-      var ring = document.getElementById('umaring');
-      var colophon = document.getElementById('umaring-colophon');
-      if (!ring || !colophon) return;
-      var links = ring.querySelectorAll('a');
-      if (links.length >= 3) {
-        colophon.innerHTML = 'This site is part of the <a href="' + links[1].href + '">UMass Webring</a>.<br>Visit <a href="' + links[0].href + '">' + links[0].textContent + '</a> or <a href="' + links[2].href + '">' + links[2].textContent + '</a> nearby.';
-      }
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() { setTimeout(formatRing, 100); });
-    } else {
-      setTimeout(formatRing, 100);
-    }
-  </script>
-</div>
