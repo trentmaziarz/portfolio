@@ -244,8 +244,8 @@ body {
 .about-text p,
 .page-text p {
   margin-bottom: 1rem;
-  text-align: justify;
-  hyphens: auto;
+  text-align: left;
+  hyphens: none;
 }
 
 a.text-link,
