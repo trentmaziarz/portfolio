@@ -1,26 +1,17 @@
 <footer class="site-footer">
   {% if page.title == 'Home' %}
-  <div class="ring-colophon">
-    <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=trentmaziarz"></script>
-    <div id="umaring" style="display:none;"></div>
-    <div id="umaring-colophon"></div>
-    <script>
-      function formatRing() {
-        var ring = document.getElementById('umaring');
-        var colophon = document.getElementById('umaring-colophon');
-        if (!ring || !colophon) return;
-        var links = ring.querySelectorAll('a');
-        if (links.length >= 3) {
-          colophon.innerHTML = 'This site is part of the <a href="' + links[1].href + '">UMass Webring</a>.<br>Visit <a href="' + links[0].href + '">' + links[0].textContent + '</a> or <a href="' + links[2].href + '">' + links[2].textContent + '</a> nearby.';
-        }
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() { setTimeout(formatRing, 100); });
-      } else {
-        setTimeout(formatRing, 100);
-      }
-    </script>
-  </div>
+  <div class="ring-colophon" id="umaring-colophon"></div>
+  <script>
+    fetch('https://umaring.mkr.cx/trentmaziarz')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        document.getElementById('umaring-colophon').innerHTML =
+          'This site is part of the <a href="https://github.com/umacabal/umaring">UMass Webring</a>.<br>' +
+          'Visit <a href="' + data.prev.url + '">' + data.prev.name + '</a>' +
+          ' or <a href="' + data.next.url + '">' + data.next.name + '</a> nearby.';
+      })
+      .catch(function() {});
+  </script>
   {% endif %}
   <div class="copyright">© {{ 'now' | date: '%Y' }} {{ site.title }}</div>
 </footer>
