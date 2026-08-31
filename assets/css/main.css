@@ -335,6 +335,50 @@ a.marginalia-link { border: none; text-decoration: none; }
   opacity: 0.95;
 }
 
+/* Wares page */
+.wares-arms { margin: 0 auto 1.5rem; width: 280px; text-align: center; }
+.wares-arms img { width: 100%; height: auto; }
+.wares-arms figcaption {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+.ware { display: flex; align-items: flex-start; gap: 1.25rem; margin-bottom: 1.5rem; }
+.ware-photo {
+  flex: none;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5rem;
+  background: var(--parchment-dark);
+  border: 1px solid var(--parchment-edge);
+}
+.ware p { margin: 0; }
+.wares-safety {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-light);
+  margin: 1.5rem 0 2rem;
+}
+.wares-empty { font-style: italic; color: var(--ink-muted); }
+.buy-button {
+  display: inline-block;
+  padding: 8px 22px;
+  border: 1.5px solid var(--gold-dark);
+  color: var(--gold-dark);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+}
+.buy-button:hover { background: var(--parchment-dark); }
+@media (max-width: 540px) {
+  .ware { flex-direction: column; }
+  .wares-arms { width: 220px; }
+}
+
 /* Home margin architecture: right gutter above 900px */
 @media (min-width: 901px) {
   .with-margin { padding-right: 140px; }

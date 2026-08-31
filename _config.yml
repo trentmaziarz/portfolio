@@ -22,6 +22,9 @@ defaults:
     values:
       layout: project
 
+# Stripe checkout link for the Wares page; leave empty until batch one is ready to sell
+stripe_link: ""
+
 markdown: kramdown
 kramdown:
   input: GFM

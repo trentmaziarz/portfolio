@@ -29,7 +29,7 @@ title: Home
   <img src="/assets/img/marginalia/knights.webp" alt="doodle of two knights fighting while a third lies flat on the ground, labeled me">
 </div>
 
-<p>Which brings it back to the tar. <img class="marginalia marginalia-right marginalia-tilt-r" src="/assets/img/marginalia/jar.webp" alt="A jar of tar grease, drawn as manuscript marginalia">In my workshop I put up grease for armor and blades, and a version for leather if you see fit, from an old family recipe. I also make weapons and axes, but nobody in my bloodline was ever called the sword-maker, so they aren't as good as the grease.</p>
+<p>Which brings it back to the tar. <img class="marginalia marginalia-right marginalia-tilt-r" src="/assets/img/marginalia/jar.webp" alt="A jar of tar grease, drawn as manuscript marginalia">In my workshop I put up grease for armor and blades, and a version for leather if you see fit, from <a href="/wares/">an old family recipe</a>. I also make weapons and axes, but nobody in my bloodline was ever called the sword-maker, so they aren't as good as the grease.</p>
 </div>
 
 <div class="link-row">
