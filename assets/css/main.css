@@ -276,6 +276,19 @@ a.text-link:hover,
 
 strong { font-weight: 600; }
 
+/* Marginalia doodles */
+.marginalia { width: 108px; height: auto; opacity: 0.8; }
+.marginalia-wide { width: 148px; }
+.marginalia-right { float: right; margin: 0.2rem 0 0.6rem 1.25rem; }
+.marginalia-left { float: left; margin: 0.2rem 1.25rem 0.6rem 0; }
+.marginalia-tilt-l { transform: rotate(-3deg); }
+.marginalia-tilt-r { transform: rotate(2deg); }
+a.marginalia-link { border: none; text-decoration: none; }
+@media (max-width: 540px) {
+  .marginalia { width: 78px; }
+  .marginalia-wide { width: 108px; }
+}
+
 /* Section labels */
 .section-label {
   font-family: var(--font-display);
