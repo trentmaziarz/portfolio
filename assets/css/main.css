@@ -17,6 +17,7 @@
   --gold: #B8963E;
   --gold-dark: #8A6E2A;
   --green-vine: #3A5C2A;
+  --murrey: #5B2A3A;   /* brand ground, from the grease labels */
 
   --font-body: 'EB Garamond', Georgia, serif;
   --font-display: 'Cormorant Garamond', Georgia, serif;
@@ -165,7 +166,7 @@ body {
 }
 
 .header-crest { margin-bottom: 0.75rem; }
-.header-crest svg { width: 36px; height: 36px; opacity: 0.6; }
+.header-crest svg { width: 44px; height: auto; opacity: 0.85; }
 
 .site-name {
   font-family: var(--font-display);
