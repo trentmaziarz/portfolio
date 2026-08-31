@@ -4,18 +4,31 @@ title: Blog
 redirect_from: /posts/
 ---
 
-<h2 class="page-title">Blog</h2>
+<div class="writing">
+<div class="folio ruled">
+  <div class="vline vline-l" aria-hidden="true"></div>
+  <div class="vline vline-r" aria-hidden="true"></div>
 
-{% for post in site.posts %}
-<div class="post-entry">
-  <div class="post-date">{{ post.date | date: "%B %Y" }}</div>
-  <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-  {% if post.excerpt %}
-  <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 200 }}</p>
+  <div class="rubric-label">Contents</div>
+  <div class="m-desktop"></div>
+
+  {% for post in site.posts %}
+  <div class="toc-entry">
+    <div class="post-date m-phone">{{ post.date | date: "%B %Y" }}</div>
+    <h3 class="entry-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+    {% if post.excerpt %}
+    <p class="entry-excerpt">{{ post.excerpt | strip_html | truncate: 200 }}</p>
+    {% endif %}
+  </div>
+  <div class="mg toc-date m-desktop" style="transform: rotate(-0.8deg);">{{ post.date | date: "%B %Y" }} · fol. {{ forloop.index }}</div>
+  {% endfor %}
+
+  {% if site.posts.size == 0 %}
+  <p class="wares-empty">Nothing is written yet.</p>
+  <div class="m-desktop"></div>
   {% endif %}
-</div>
-{% endfor %}
 
-{% if site.posts.size == 0 %}
-<p style="font-style: italic; color: var(--ink-muted);">Posts coming soon.</p>
-{% endif %}
+  <div class="ruled-blank" aria-hidden="true"></div>
+  <div class="mg m-desktop" style="align-self: center; transform: rotate(-1.5deg);">ruled, not yet written.</div>
+</div>
+</div>
