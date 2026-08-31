@@ -28,7 +28,9 @@ redirect_from: /posts/
   <div class="m-desktop"></div>
   {% endif %}
 
+  {% if site.posts.size < 4 %}
   <div class="ruled-blank" aria-hidden="true"></div>
   <div class="mg m-desktop" style="align-self: center; transform: rotate(-1.5deg);">ruled, not yet written.</div>
+  {% endif %}
 </div>
 </div>
