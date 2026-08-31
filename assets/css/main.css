@@ -130,15 +130,15 @@ body {
   );
 }
 
-/* Corner vine ornaments */
+/* Corner gouttes ornaments */
 .vine-corner {
   position: absolute;
   z-index: 3;
-  color: var(--green-vine);
   opacity: 0.55;
-  font-size: 1.8rem;
   line-height: 1;
 }
+.corner-gouttes { width: 22px; height: auto; display: block; }
+.corner-gouttes path { fill: var(--gold-dark); }
 
 .vine-tl { top: 10px; left: 24px; }
 .vine-tr { top: 10px; right: 24px; transform: scaleX(-1); }
@@ -276,17 +276,86 @@ a.text-link:hover,
 
 strong { font-weight: 600; }
 
+/* Rubrics: red-lettered clauses, at most two on the home page */
+.rubric { color: var(--red); font-weight: 500; }
+
+/* Interlinear gloss: exactly one on the page, ever */
+.gloss-wrap { position: relative; }
+.gloss {
+  position: absolute;
+  left: 0;
+  top: -0.78em;
+  font-size: 0.62em;
+  font-style: italic;
+  color: var(--ink-muted);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Footer divider and mark */
+.footer-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 60%;
+  margin: 0 auto 0.5rem;
+}
+.footer-divider .rule { flex: 1; height: 1px; background: var(--gold); opacity: 0.6; }
+.footer-gouttes { width: 30px; height: auto; flex: none; }
+.footer-gouttes path { fill: var(--gold); }
+.footer-mark {
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: var(--gold-dark);
+  margin-bottom: 1.25rem;
+}
+
 /* Marginalia doodles */
-.marginalia { width: 108px; height: auto; opacity: 0.8; }
-.marginalia-wide { width: 148px; }
+.marginalia { width: 150px; height: auto; opacity: 0.95; }
 .marginalia-right { float: right; margin: 0.2rem 0 0.6rem 1.25rem; }
-.marginalia-left { float: left; margin: 0.2rem 1.25rem 0.6rem 0; }
 .marginalia-tilt-l { transform: rotate(-3deg); }
 .marginalia-tilt-r { transform: rotate(2deg); }
 a.marginalia-link { border: none; text-decoration: none; }
+
+/* The beat: setup, cat, payoff hugging on a tight diagonal */
+.beat { position: relative; min-height: 130px; margin-bottom: 1.25rem; }
+.beat-setup { display: block; text-align: right; margin-right: 120px; }
+.beat-cat { position: absolute; top: 0.1rem; right: 0; width: 110px; }
+.beat-cat img { width: 100%; height: auto; opacity: 0.95; transform: scaleX(-1) rotate(3deg); }
+.beat-payoff { display: block; text-align: right; font-style: italic; margin: 62px 14px 0 0; }
+
+/* Bas-de-page: the knights beneath the Buhurt paragraph */
+.bas-de-page { margin: 14px 0 10px; clear: left; }
+.bas-de-page img {
+  display: block;
+  width: 300px;
+  margin-left: -20px;
+  transform: rotate(-1deg);
+  opacity: 0.95;
+}
+
+/* Home margin architecture: right gutter above 900px */
+@media (min-width: 901px) {
+  .with-margin { padding-right: 140px; }
+  .with-margin .marginalia-right { margin-right: -126px; }
+  .with-margin .home-photo { margin-right: -166px; }
+  .with-margin .beat-cat { right: -55px; }
+  .with-margin .beat-setup { margin-right: 68px; }
+  .with-margin .beat-payoff { margin-right: 0; }
+}
+
+@media (max-width: 700px) {
+  .beat { min-height: 116px; }
+  .beat-setup { margin-right: 106px; }
+  .beat-cat { width: 96px; }
+  .beat-payoff { margin: 52px 10px 0 0; }
+  .bas-de-page { text-align: center; }
+  .bas-de-page img { width: 230px; margin: 0 auto; }
+}
+
 @media (max-width: 540px) {
-  .marginalia { width: 78px; }
-  .marginalia-wide { width: 108px; }
+  .marginalia { width: 100px; }
 }
 
 /* Section labels */
@@ -334,23 +403,22 @@ a.marginalia-link { border: none; text-decoration: none; }
    ═══════════════════════════════════════ */
 .home-photo {
   float: right;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
+  width: 190px;
   margin: 0 0 1rem 1.5rem;
-  border: 2px solid var(--parchment-edge);
-  background: var(--parchment-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  shape-outside: circle();
+  transform: rotate(1.5deg);
 }
 
 .home-photo img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+}
+
+.home-photo-caption {
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-top: 2px;
 }
 
 .photo-placeholder {
