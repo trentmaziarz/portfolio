@@ -5,8 +5,7 @@ baseurl: ""
 
 collections:
   projects:
-    output: true
-    permalink: /projects/:title/
+    output: false
 
 defaults:
   - scope:
