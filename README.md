@@ -1,6 +1,9 @@
 # Portfolio
 
-My Academic portfolio - a manuscript-themed Jekyll site for GitHub Pages.
+My personal site - a scribe's-manuscript Jekyll site for GitHub Pages.
+The page is ruled like a working codex: one heraldic bar, a wide outer
+margin for doodles and glosses, catchwords for nav, and the family
+grease on the Wares page.
 
 ## Quick Start if you want this portfolio for yourself
 
@@ -30,48 +33,34 @@ Create a file in `_posts/` named `YYYY-MM-DD-your-title.md`:
 ---
 title: "Your Post Title"
 date: 2026-03-15
+permalink: /blog/your-title/
 ---
 
 Your content here in Markdown.
 ```
 
-### Add a project
-Create a file in `_projects/` named `your-project.md`:
+Photos and video go in "plates" (a thin ink frame on the parchment):
 
-```markdown
----
-title: "Project Name"
-type: "Interactive Visualization"
-date: 2025-06-01
-tags: [D3.js, GIS]
-description: "One-line description for the listing page."
----
-
-Full project description in Markdown.
-```
-
-### Add a publication
-Edit `_data/publications.yml` - add an entry under the right year:
-
-```yaml
-- title: "Your Paper Title"
-  authors: "Maziarz, T."
-  venue: "Journal Name, vol(issue)"
-  pdf: "/assets/papers/your-paper.pdf"
-  doi: "10.xxxx/xxxxx"
-```
-
-### Update your CV
-Edit `_data/cv.yml` — add entries under the right section.
-
-### Add your photo
-Replace the placeholder in `index.md` with:
 ```html
-<div class="home-photo">
-  <img src="/assets/img/headshot.jpg" alt="Trent Maziarz">
-</div>
+<figure class="plate plate-tilt-r">
+  <img src="/assets/img/posts/your-photo.webp" alt="describe it">
+  <figcaption>caption in the small hand</figcaption>
+</figure>
 ```
-And put your photo at `assets/img/headshot.jpg`.
+
+Alternate `plate-tilt-r` and `plate-tilt-l` so they don't lean the same way.
+
+### Add a batch note (Wares page)
+A batch note is a normal post with `categories: batch-notes` in the front
+matter; the Wares page lists them automatically.
+
+### Swap the label art for real jar photos
+Replace `assets/img/labels/front-steel.svg` and
+`assets/img/labels/front-wagon.svg`. Nothing else needs to change.
+
+### Margin doodles
+The home page marginalia live in `assets/img/marginalia/`. The margin is
+full; retired or replaced pieces go to `_archive/`, never deleted.
 
 ### Exclude the umaring
 
@@ -88,25 +77,21 @@ This is unique to my site due to my affilation to UMASS
 ├── _layouts/            # Page templates
 │   ├── default.html     # Base manuscript layout
 │   ├── post.html        # Blog post layout
-│   └── project.html     # Project page layout
+│   └── project.html     # Project page layout (parked)
 ├── _includes/           # Reusable HTML fragments
 │   ├── head.html        # <head> tag contents
-│   ├── header.html      # Site header + nav
-│   ├── borders.html     # Manuscript border decorations
+│   ├── header.html      # Running head + nav
+│   ├── borders.html     # Heraldic bar + pricking
 │   └── footer.html      # Page footer
-├── _projects/           # Project files (Markdown)
 ├── _posts/              # Blog posts (Markdown)
-├── _data/
-│   ├── publications.yml # Publications data
-│   └── cv.yml           # CV data
+├── _projects/           # Project files (parked, not published)
+├── _archive/            # Retired pages and data; nothing is deleted
 ├── assets/
-│   ├── css/main.css     # All styles
-│   ├── img/             # Images
-│   └── papers/          # PDF papers
-├── projects/index.html  # Projects listing page
-├── posts/index.html     # Posts listing page
-├── publications/index.html # Publications listing page
-├── cv/index.md          # CV page
+│   ├── css/main.css     # All styles (the ruled-page system lives here)
+│   ├── img/             # Images, marginalia doodles, label art
+│   └── media/           # Video
+├── blog/index.html      # Blog contents page
+├── wares/index.md       # Maź Maziarza, the family grease
 ├── index.md             # Home page
 ├── CNAME                # Custom domain
 ├── Gemfile              # Ruby dependencies

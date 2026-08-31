@@ -499,6 +499,33 @@ strong { font-weight: 600; }
 }
 
 /* ═══════════════════════════════════════
+   PLATES: photos and video in posts
+   ═══════════════════════════════════════ */
+.plate { margin: 1.75rem 0; }
+
+.plate img,
+.plate video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(42,31,20,0.35);
+  padding: 6px;
+  background: var(--parchment-dark);
+}
+
+.plate figcaption {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  margin-top: 8px;
+  padding-left: 4px;
+}
+
+.plate-tilt-l { transform: rotate(-0.6deg); }
+.plate-tilt-r { transform: rotate(0.5deg); }
+
+/* ═══════════════════════════════════════
    PROJECTS (parked collection layout)
    ═══════════════════════════════════════ */
 .project-entry {
