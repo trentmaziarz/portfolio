@@ -130,15 +130,15 @@ body {
   );
 }
 
-/* Corner gouttes ornaments */
+/* Corner vine ornaments */
 .vine-corner {
   position: absolute;
   z-index: 3;
+  color: var(--green-vine);
   opacity: 0.55;
+  font-size: 1.8rem;
   line-height: 1;
 }
-.corner-gouttes { width: 22px; height: auto; display: block; }
-.corner-gouttes path { fill: var(--gold-dark); }
 
 .vine-tl { top: 10px; left: 24px; }
 .vine-tr { top: 10px; right: 24px; transform: scaleX(-1); }
