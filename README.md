@@ -27,7 +27,21 @@ grease on the Wares page.
 ## How to Add Content
 
 ### Add a blog post
-Create a file in `_posts/` named `YYYY-MM-DD-your-title.md`:
+
+The easy way: run the postmaker.
+
+```
+node postmaker.mjs
+```
+
+It opens the site in your browser as an editor. Type the title on the page,
+write your paragraphs where they'll sit, and drag photos or video straight
+onto the page; they become plates with alternating tilt, a caption, and an
+alt text field. "Make post" writes the finished file into `_posts/` and
+copies the media into `assets/` with dated names. It can also reopen any
+existing post for edits. Needs Node installed, nothing else.
+
+The manual way: create a file in `_posts/` named `YYYY-MM-DD-your-title.md`:
 
 ```markdown
 ---
@@ -93,6 +107,8 @@ This is unique to my site due to my affilation to UMASS
 ├── blog/index.html      # Blog contents page
 ├── wares/index.md       # Maź Maziarza, the family grease
 ├── index.md             # Home page
+├── postmaker.mjs        # Local post builder (node postmaker.mjs)
+├── postmaker.html       # The builder's editor page (not published)
 ├── CNAME                # Custom domain
 ├── Gemfile              # Ruby dependencies
 └── README.md            # This file

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postmaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+<style>
+  /* Tool chrome only; the page below uses the site's real CSS. */
+  .pm-bar {
+    position: sticky; top: 0; z-index: 1000;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 16px; background: #22141b; color: #e8dcc8;
+    font: 13px/1.4 -apple-system, "Segoe UI", sans-serif;
+    box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  }
+  .pm-bar label { opacity: .7; margin-left: 4px; }
+  .pm-bar select, .pm-bar input {
+    font: inherit; color: #e8dcc8; background: #3a2530; border: 1px solid #5B2A3A;
+    border-radius: 4px; padding: 4px 8px;
+  }
+  .pm-bar input:focus, .pm-bar select:focus { outline: 1px solid #B8963E; }
+  #pmSlugIn { width: 170px; }
+  .pm-bar button {
+    font: inherit; color: #e8dcc8; background: #3a2530; border: 1px solid #5B2A3A;
+    border-radius: 4px; padding: 4px 10px; cursor: pointer;
+  }
+  .pm-bar button:hover { background: #4a2f3d; }
+  .pm-bar .pm-fmt { min-width: 30px; font-family: Georgia, serif; }
+  .pm-bar #pmSaveBtn { background: #B8963E; color: #22141b; font-weight: 600; border-color: #8A6E2A; }
+  .pm-bar #pmSaveBtn:hover { background: #c9a850; }
+  .pm-spacer { flex: 1; }
+  #pmStatus { opacity: .8; max-width: 420px; }
+  #pmStatus.pm-ok { color: #a8d8a8; }
+  #pmStatus.pm-err { color: #e8a0a0; }
+
+  /* editable affordances */
+  [contenteditable]:focus { outline: 1px dashed rgba(139,32,32,.35); outline-offset: 4px; }
+  [contenteditable]:empty::before { content: attr(data-ph); opacity: .35; font-style: italic; }
+
+  /* block wrapper + controls */
+  .pm-block { position: relative; }
+  .pm-ctl {
+    position: absolute; left: -46px; top: 2px; display: flex; flex-direction: column; gap: 2px;
+    opacity: 0; transition: opacity .12s;
+  }
+  .pm-block:hover .pm-ctl { opacity: 1; }
+  .pm-ctl button {
+    width: 26px; height: 22px; font: 12px/1 -apple-system, "Segoe UI", sans-serif;
+    color: #5B2A3A; background: rgba(255,255,255,.7); border: 1px solid rgba(91,42,58,.35);
+    border-radius: 4px; cursor: pointer; padding: 0;
+  }
+  .pm-ctl button:hover { background: #fff; }
+  .pm-ctl .pm-grip { cursor: grab; }
+  .pm-block.pm-dragging { opacity: .35; }
+  .pm-block.pm-dropline::before {
+    content: ""; position: absolute; left: 0; right: 0; top: -3px; height: 2px;
+    background: #8B2020;
+  }
+
+  /* insert bar between blocks */
+  .pm-add { display: flex; gap: 6px; justify-content: center; padding: 2px 0; opacity: 0; transition: opacity .12s; }
+  .pm-add:hover, .pm-add.pm-always { opacity: 1; }
+  #pmBlocks:hover .pm-add { opacity: .45; }
+  #pmBlocks .pm-add:hover { opacity: 1; }
+  .pm-add button {
+    font: 11px/1 -apple-system, "Segoe UI", sans-serif; color: #5B2A3A;
+    background: rgba(255,255,255,.75); border: 1px dashed rgba(91,42,58,.4);
+    border-radius: 10px; padding: 3px 10px; cursor: pointer;
+  }
+  .pm-add button:hover { background: #fff; }
+
+  /* plate extras in edit mode */
+  .pm-alt { display: block; width: 100%; box-sizing: border-box; margin-top: 4px;
+    font: 12px/1.4 -apple-system, "Segoe UI", sans-serif; color: #5B2A3A;
+    background: rgba(255,255,255,.5); border: 1px dashed rgba(91,42,58,.35); border-radius: 4px; padding: 4px 8px; }
+  .pm-raw { width: 100%; box-sizing: border-box; min-height: 90px; font: 12px/1.5 Consolas, monospace;
+    background: rgba(255,255,255,.55); border: 1px dashed rgba(91,42,58,.35); border-radius: 4px; padding: 8px; }
+  .pm-droptarget { outline: 2px dashed rgba(139,32,32,.5); outline-offset: 8px; }
+
+  /* keep the folio single-column: this is a post editor, glosses live on home */
+  .run-head a { pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div class="pm-bar">
+  <select id="pmPostSel"><option value="">New post…</option></select>
+  <label for="pmSlugIn">slug</label><input id="pmSlugIn" spellcheck="false">
+  <label for="pmDateIn">date</label><input id="pmDateIn" type="date">
+  <button class="pm-fmt" id="pmBoldBtn" title="Bold (select text first)"><b>B</b></button>
+  <button class="pm-fmt" id="pmItalBtn" title="Italic (select text first)"><i>I</i></button>
+  <button class="pm-fmt" id="pmLinkBtn" title="Link (select text first)">🔗</button>
+  <div class="pm-spacer"></div>
+  <span id="pmStatus"></span>
+  <button id="pmSaveBtn">Make post</button>
+</div>
+
+<div class="manuscript">
+  <div class="border-left"><div class="bar"></div></div>
+  <div class="pricking" aria-hidden="true"></div>
+  <div class="content-area">
+    <header class="run-head">
+      <div class="rh-left">
+        <svg viewBox="0 0 42 16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three tar drops">
+          <path fill="#5B2A3A" d="M5 1 C5 1 1 7 1 10 a4 4 0 0 0 8 0 C9 7 5 1 5 1 Z"/>
+          <path fill="#5B2A3A" d="M21 3 C21 3 17 8.5 17 11.2 a4 4 0 0 0 8 0 C25 8.5 21 3 21 3 Z"/>
+          <path fill="#5B2A3A" d="M37 1 C37 1 33 7 33 10 a4 4 0 0 0 8 0 C41 7 37 1 37 1 Z"/>
+        </svg>
+        <a class="rh-name" href="#">Trent Maziarz</a>
+      </div>
+      <nav class="rh-nav">
+        <a href="#">home</a><span class="sep">·</span><a href="#">wares</a><span class="sep">·</span><a href="#" class="active">blog</a>
+      </nav>
+    </header>
+    <div class="headrule" aria-hidden="true"></div>
+    <article>
+      <div class="post-date" id="pmDateShow"></div>
+      <h2 class="page-title" id="pmTitle" contenteditable="true" data-ph="Title" spellcheck="true"></h2>
+      <div class="page-text" id="pmBlocks"></div>
+    </article>
+    <footer class="site-footer">
+      <div class="footer-divider" aria-hidden="true">
+        <span class="rule"></span>
+        <svg class="footer-gouttes" viewBox="0 0 42 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 1 C5 1 1 7 1 10 a4 4 0 0 0 8 0 C9 7 5 1 5 1 Z"/>
+          <path d="M21 3 C21 3 17 8.5 17 11.2 a4 4 0 0 0 8 0 C25 8.5 21 3 21 3 Z"/>
+          <path d="M37 1 C37 1 33 7 33 10 a4 4 0 0 0 8 0 C41 7 37 1 37 1 Z"/>
+        </svg>
+        <span class="rule"></span>
+      </div>
+      <div class="footer-mark">MAZIARZ · MASSACHUSETTS</div>
+      <div class="copyright">© 2026 Trent Maziarz</div>
+    </footer>
+  </div>
+</div>
+
+<input type="file" id="pmFileIn" multiple accept="image/*,video/*" hidden>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const blocksEl = $('pmBlocks');
+  let editingFile = null;   // set when an existing post is open
+  let slugTouched = false;  // stop auto-slugging once the user edits it
+  let dirty = false;
+  let pendingInsertAfter = null; // block element the file picker inserts after
+
+  const markDirty = () => { dirty = true; };
+  window.addEventListener('beforeunload', e => { if (dirty) e.preventDefault(); });
+
+  // ---- tiny converters between post markdown and editable HTML
+  const escHtml = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function mdToHtml(text) {
+    // paragraphs are markdown text that may carry inline <a> anchors; keep those
+    let h = text.replace(/<(?!\/?a(\s|>))/gi, '&lt;');
+    h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    h = h.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return h.replace(/\n/g, '<br>');
+  }
+
+  function htmlToMd(node) {
+    let out = '';
+    for (const n of node.childNodes) {
+      if (n.nodeType === Node.TEXT_NODE) { out += n.textContent; continue; }
+      if (n.nodeType !== Node.ELEMENT_NODE) continue;
+      const tag = n.tagName;
+      if (tag === 'BR') out += '\n';
+      else if (tag === 'EM' || tag === 'I') out += '*' + htmlToMd(n) + '*';
+      else if (tag === 'STRONG' || tag === 'B') out += '**' + htmlToMd(n) + '**';
+      else if (tag === 'A') out += '<a href="' + n.getAttribute('href') + '">' + htmlToMd(n) + '</a>';
+      else if (tag === 'DIV' || tag === 'P') out += htmlToMd(n) + '\n';
+      else out += htmlToMd(n);
+    }
+    return out;
+  }
+
+  const plainCaption = el => htmlToMd(el).replace(/\n+/g, ' ').trim();
+
+  // ---- block construction (DOM is the source of truth)
+
+  function ctlButtons(block) {
+    const ctl = document.createElement('div');
+    ctl.className = 'pm-ctl';
+    const mk = (txt, title, fn) => {
+      const b = document.createElement('button');
+      b.textContent = txt; b.title = title; b.tabIndex = -1;
+      b.addEventListener('click', fn);
+      ctl.appendChild(b); return b;
+    };
+    const grip = mk('⠿', 'Drag to reorder', () => {});
+    grip.className = 'pm-grip';
+    grip.draggable = true;
+    grip.addEventListener('dragstart', e => {
+      dragBlock = block; block.classList.add('pm-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', 'block');
+    });
+    grip.addEventListener('dragend', () => { block.classList.remove('pm-dragging'); dragBlock = null; clearDropline(); });
+    mk('↑', 'Move up', () => { const prev = prevBlock(block); if (prev) { blocksEl.insertBefore(block, prev); ensureAdders(); markDirty(); } });
+    mk('↓', 'Move down', () => { const next = nextBlock(block); if (next) { blocksEl.insertBefore(next, block); ensureAdders(); markDirty(); } });
+    mk('✕', 'Delete block', () => { if (confirm('Delete this block?')) { block.remove(); ensureAdders(); markDirty(); } });
+    return ctl;
+  }
+
+  const prevBlock = b => { let n = b.previousElementSibling; while (n && !n.classList.contains('pm-block')) n = n.previousElementSibling; return n; };
+  const nextBlock = b => { let n = b.nextElementSibling; while (n && !n.classList.contains('pm-block')) n = n.nextElementSibling; return n; };
+
+  function wrapBlock(inner, type) {
+    const w = document.createElement('div');
+    w.className = 'pm-block';
+    w.dataset.type = type;
+    w.appendChild(inner);
+    w.insertBefore(ctlButtons(w), inner);
+    return w;
+  }
+
+  function makeParagraph(mdText) {
+    const p = document.createElement('p');
+    p.contentEditable = 'true';
+    p.dataset.ph = 'Write here.';
+    p.spellcheck = true;
+    p.innerHTML = mdToHtml(mdText || '');
+    p.addEventListener('input', markDirty);
+    return wrapBlock(p, 'p');
+  }
+
+  function makeRaw(text) {
+    const t = document.createElement('textarea');
+    t.className = 'pm-raw';
+    t.value = text;
+    t.title = 'Raw HTML block (left as-is)';
+    t.addEventListener('input', markDirty);
+    return wrapBlock(t, 'raw');
+  }
+
+  function countPlatesBefore(el) {
+    let n = 0;
+    for (const b of blocksEl.querySelectorAll('.pm-block')) {
+      if (b === el) break;
+      if (b.dataset.type === 'img' || b.dataset.type === 'video') n++;
+    }
+    return n;
+  }
+
+  function makePlate(b) {
+    const fig = document.createElement('figure');
+    fig.className = 'plate plate-tilt-' + (b.tilt === 'l' ? 'l' : 'r');
+    if (b.type === 'video') {
+      const v = document.createElement('video');
+      v.controls = true; v.preload = 'metadata'; v.playsInline = true;
+      const s = document.createElement('source');
+      s.src = b.url || b.src; v.appendChild(s);
+      fig.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      img.src = b.url || b.src;
+      img.alt = b.alt || '';
+      fig.appendChild(img);
+    }
+    const cap = document.createElement('figcaption');
+    cap.contentEditable = 'true';
+    cap.dataset.ph = 'Caption.';
+    cap.spellcheck = true;
+    cap.innerHTML = mdToHtml(b.caption || '');
+    cap.addEventListener('input', markDirty);
+    fig.appendChild(cap);
+
+    const w = wrapBlock(fig, b.type);
+    if (b.staged) w.dataset.staged = b.staged;
+    if (b.src) w.dataset.src = b.src;
+    if (b.type === 'img') {
+      const alt = document.createElement('input');
+      alt.className = 'pm-alt';
+      alt.placeholder = 'alt text: describe the photo for screen readers';
+      alt.value = b.alt || '';
+      alt.addEventListener('input', () => { fig.querySelector('img').alt = alt.value; markDirty(); });
+      w.appendChild(alt);
+    }
+    const flip = document.createElement('button');
+    flip.textContent = '↺'; flip.title = 'Flip tilt'; flip.tabIndex = -1;
+    flip.addEventListener('click', () => {
+      fig.classList.toggle('plate-tilt-l'); fig.classList.toggle('plate-tilt-r'); markDirty();
+    });
+    w.querySelector('.pm-ctl').appendChild(flip);
+    return w;
+  }
+
+  // ---- insert bars
+
+  function makeAdder() {
+    const bar = document.createElement('div');
+    bar.className = 'pm-add';
+    const mk = (txt, fn) => {
+      const b = document.createElement('button');
+      b.textContent = txt;
+      b.addEventListener('click', () => fn(bar));
+      bar.appendChild(b);
+    };
+    mk('+ text', a => { const blk = makeParagraph(''); a.after(blk); ensureAdders(); blk.querySelector('p').focus(); markDirty(); });
+    mk('+ photo / video', a => { pendingInsertAfter = a; $('pmFileIn').click(); });
+    return bar;
+  }
+
+  // one adder before everything and one after each block
+  function ensureAdders() {
+    blocksEl.querySelectorAll('.pm-add').forEach(a => a.remove());
+    blocksEl.prepend(makeAdder());
+    for (const b of blocksEl.querySelectorAll('.pm-block')) b.after(makeAdder());
+    const adders = blocksEl.querySelectorAll('.pm-add');
+    if (adders.length === 1) adders[0].classList.add('pm-always');
+  }
+
+  // ---- uploads
+
+  async function uploadFiles(files, afterEl) {
+    let anchor = afterEl || lastInsertPoint();
+    for (const f of files) {
+      setStatus('uploading ' + f.name + '…');
+      const res = await fetch('/api/upload?name=' + encodeURIComponent(f.name), { method: 'POST', body: f });
+      const j = await res.json();
+      if (!res.ok) { setStatus(j.error || 'upload failed', 'err'); continue; }
+      const tilt = countPlatesBefore(null) % 2 === 0 ? 'r' : 'l';
+      const blk = makePlate({ type: j.kind, staged: j.id, url: j.url, tilt, caption: '', alt: '' });
+      anchor.after(blk);
+      anchor = blk;
+      ensureAdders();
+      markDirty();
+    }
+    setStatus('');
+  }
+
+  const lastInsertPoint = () => {
+    const bs = blocksEl.querySelectorAll('.pm-block');
+    return bs.length ? bs[bs.length - 1] : blocksEl.querySelector('.pm-add');
+  };
+
+  $('pmFileIn').addEventListener('change', e => {
+    const after = pendingInsertAfter; pendingInsertAfter = null;
+    uploadFiles([...e.target.files], after);
+    e.target.value = '';
+  });
+
+  // drop files straight onto the page
+  let dragBlock = null;
+  const clearDropline = () => blocksEl.querySelectorAll('.pm-dropline').forEach(b => b.classList.remove('pm-dropline'));
+
+  blocksEl.addEventListener('dragover', e => {
+    e.preventDefault();
+    if (dragBlock) {
+      clearDropline();
+      const t = e.target.closest('.pm-block');
+      if (t && t !== dragBlock) t.classList.add('pm-dropline');
+    } else blocksEl.classList.add('pm-droptarget');
+  });
+  blocksEl.addEventListener('dragleave', e => { if (e.target === blocksEl) blocksEl.classList.remove('pm-droptarget'); });
+  blocksEl.addEventListener('drop', e => {
+    e.preventDefault();
+    blocksEl.classList.remove('pm-droptarget');
+    const t = e.target.closest('.pm-block');
+    if (dragBlock) {
+      clearDropline();
+      if (t && t !== dragBlock) { blocksEl.insertBefore(dragBlock, t); ensureAdders(); markDirty(); }
+      return;
+    }
+    const files = [...(e.dataTransfer?.files || [])];
+    if (files.length) uploadFiles(files, t || null);
+  });
+
+  // ---- formatting buttons
+
+  $('pmBoldBtn').addEventListener('click', () => { document.execCommand('bold'); markDirty(); });
+  $('pmItalBtn').addEventListener('click', () => { document.execCommand('italic'); markDirty(); });
+  $('pmLinkBtn').addEventListener('click', () => {
+    const url = prompt('Link to:', 'https://');
+    if (url && url !== 'https://') { document.execCommand('createLink', false, url); markDirty(); }
+  });
+
+  // Enter in a paragraph splits it into a new paragraph block (Shift+Enter = soft break);
+  // Enter in a title or caption does nothing
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const ed = e.target.closest('[contenteditable]');
+    if (!ed) return;
+    if (ed.tagName !== 'P') { e.preventDefault(); return; }
+    if (e.shiftKey) return;
+    e.preventDefault();
+    const w = ed.closest('.pm-block');
+    const sel = getSelection();
+    const blk = makeParagraph('');
+    const np = blk.querySelector('p');
+    if (sel.rangeCount) {
+      const r = sel.getRangeAt(0);
+      r.deleteContents();
+      const tail = document.createRange();
+      tail.selectNodeContents(ed);
+      tail.setStart(r.endContainer, r.endOffset);
+      np.appendChild(tail.extractContents());
+    }
+    w.after(blk);
+    ensureAdders();
+    np.focus();
+    const nr = document.createRange();
+    nr.selectNodeContents(np); nr.collapse(true);
+    sel.removeAllRanges(); sel.addRange(nr);
+    markDirty();
+  });
+
+  // Backspace in an empty paragraph removes the block
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Backspace') return;
+    const p = e.target.closest('p[contenteditable]');
+    if (!p || p.textContent !== '') return;
+    const w = p.closest('.pm-block');
+    const prev = prevBlock(w);
+    if (blocksEl.querySelectorAll('.pm-block').length <= 1) return;
+    e.preventDefault();
+    w.remove();
+    ensureAdders();
+    const pp = prev?.querySelector('p[contenteditable]');
+    if (pp) {
+      pp.focus();
+      const sel = getSelection(); const r = document.createRange();
+      r.selectNodeContents(pp); r.collapse(false);
+      sel.removeAllRanges(); sel.addRange(r);
+    }
+    markDirty();
+  });
+
+  // paste always as plain text so the page stays clean
+  document.addEventListener('paste', e => {
+    if (!e.target.closest('[contenteditable]')) return;
+    e.preventDefault();
+    document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
+  });
+
+  // ---- title, slug, date
+
+  const slugify = s => s.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  $('pmTitle').addEventListener('input', () => {
+    if (!slugTouched && !editingFile) $('pmSlugIn').value = slugify($('pmTitle').textContent);
+    markDirty();
+  });
+  $('pmSlugIn').addEventListener('input', () => { slugTouched = true; markDirty(); });
+  $('pmDateIn').addEventListener('change', () => { showDate(); markDirty(); });
+
+  function showDate() {
+    const v = $('pmDateIn').value;
+    if (!v) { $('pmDateShow').textContent = ''; return; }
+    const [y, m] = v.split('-').map(Number);
+    $('pmDateShow').textContent = new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'long' }) + ' ' + y;
+  }
+
+  function setStatus(msg, cls) {
+    const s = $('pmStatus');
+    s.textContent = msg;
+    s.className = cls === 'ok' ? 'pm-ok' : cls === 'err' ? 'pm-err' : '';
+  }
+
+  // ---- load / new
+
+  function clearPost() {
+    blocksEl.innerHTML = '';
+    editingFile = null; slugTouched = false; dirty = false;
+    $('pmTitle').textContent = '';
+    $('pmSlugIn').value = '';
+    const t = new Date();
+    $('pmDateIn').value = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+    showDate();
+    blocksEl.appendChild(makeParagraph(''));
+    ensureAdders();
+  }
+
+  async function loadPost(file) {
+    const res = await fetch('/api/post?file=' + encodeURIComponent(file));
+    const j = await res.json();
+    if (!res.ok) { setStatus(j.error || 'could not open post', 'err'); return; }
+    blocksEl.innerHTML = '';
+    editingFile = j.file; slugTouched = true; dirty = false;
+    $('pmTitle').textContent = j.title;
+    $('pmSlugIn').value = j.slug;
+    $('pmDateIn').value = j.date;
+    showDate();
+    for (const b of j.blocks) {
+      if (b.type === 'p') blocksEl.appendChild(makeParagraph(b.text));
+      else if (b.type === 'raw') blocksEl.appendChild(makeRaw(b.text));
+      else blocksEl.appendChild(makePlate(b));
+    }
+    if (!j.blocks.length) blocksEl.appendChild(makeParagraph(''));
+    ensureAdders();
+    setStatus('opened ' + file, 'ok');
+  }
+
+  async function refreshPostList(selected) {
+    const posts = await (await fetch('/api/posts')).json();
+    const sel = $('pmPostSel');
+    sel.innerHTML = '<option value="">New post…</option>';
+    for (const p of posts) {
+      const o = document.createElement('option');
+      o.value = p.file; o.textContent = p.title + ' (' + p.date + ')';
+      sel.appendChild(o);
+    }
+    sel.value = selected || '';
+  }
+
+  $('pmPostSel').addEventListener('change', e => {
+    if (dirty && !confirm('Discard unsaved changes?')) { e.target.value = editingFile || ''; return; }
+    e.target.value ? loadPost(e.target.value) : clearPost();
+  });
+
+  // ---- save
+
+  function collectBlocks() {
+    const out = [];
+    for (const w of blocksEl.querySelectorAll('.pm-block')) {
+      const type = w.dataset.type;
+      if (type === 'p') out.push({ type, text: htmlToMd(w.querySelector('p')).trim() });
+      else if (type === 'raw') out.push({ type, text: w.querySelector('textarea').value });
+      else {
+        const fig = w.querySelector('figure');
+        out.push({
+          type,
+          staged: w.dataset.staged || undefined,
+          src: w.dataset.src || undefined,
+          tilt: fig.classList.contains('plate-tilt-l') ? 'l' : 'r',
+          caption: plainCaption(fig.querySelector('figcaption')),
+          alt: type === 'img' ? (w.querySelector('.pm-alt')?.value || '') : undefined,
+        });
+      }
+    }
+    return out;
+  }
+
+  $('pmSaveBtn').addEventListener('click', async () => {
+    const title = $('pmTitle').textContent.trim();
+    const slug = $('pmSlugIn').value.trim();
+    const date = $('pmDateIn').value;
+    if (!title) return setStatus('the post needs a title', 'err');
+    if (!/^[a-z0-9-]+$/.test(slug)) return setStatus('slug must be lowercase letters, numbers, hyphens', 'err');
+    let blocks = collectBlocks();
+
+    // house rule: no em-dashes, ever
+    const dashed = [title, ...blocks.map(b => b.text || b.caption || '')].some(t => /—/.test(t));
+    if (dashed) {
+      if (!confirm('Em-dash found. House rule says no em-dashes; replace each with a comma?')) {
+        return setStatus('fix the em-dashes, then save', 'err');
+      }
+      const fix = t => t.replace(/\s*—\s*/g, ', ');
+      blocks = blocks.map(b => ({ ...b, text: b.text && fix(b.text), caption: b.caption && fix(b.caption) }));
+      // reflect the fix in the editor too
+      blocksEl.querySelectorAll('[contenteditable], textarea').forEach(el => {
+        if (el.tagName === 'TEXTAREA') el.value = fix(el.value);
+        else if (/—/.test(el.innerHTML)) el.innerHTML = el.innerHTML.replace(/\s*—\s*/g, ', ');
+      });
+      $('pmTitle').textContent = fix($('pmTitle').textContent);
+    }
+
+    const noAlt = blocks.some(b => b.type === 'img' && !(b.alt || '').trim());
+    if (noAlt && !confirm('Some photos have no alt text. Save anyway?')) return setStatus('add alt text, then save', 'err');
+
+    const payload = { title, slug, date, blocks, file: editingFile || undefined };
+    setStatus('saving…');
+    let res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    if (res.status === 409) {
+      if (!confirm('A post with that filename already exists. Overwrite it?')) return setStatus('not saved', 'err');
+      res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, force: true }) });
+    }
+    const j = await res.json();
+    if (!res.ok) return setStatus(j.error || 'save failed', 'err');
+
+    // staged media is now real: point the editor at the final files
+    for (const w of blocksEl.querySelectorAll('.pm-block[data-staged]')) {
+      const src = j.resolved[w.dataset.staged];
+      if (src) {
+        delete w.dataset.staged;
+        w.dataset.src = src;
+        const el = w.querySelector('img, source');
+        if (el) el.src = src;
+      }
+    }
+    editingFile = j.file; dirty = false;
+    refreshPostList(j.file);
+    setStatus('wrote ' + j.wrote.join(', '), 'ok');
+  });
+
+  // ---- go
+  clearPost();
+  refreshPostList();
+})();
+</script>
+</body>
+</html>
