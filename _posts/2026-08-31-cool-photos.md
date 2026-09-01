@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "cool photos"
-date: 2026-08-31
+date: 2026-08-31 22:52:00
 permalink: /blog/cool-photos/
 ---
 

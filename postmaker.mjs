@@ -163,8 +163,18 @@ function savePost(payload) {
     }
   }
 
+  // same-day posts tie on a bare date and Jekyll then orders them by filename,
+  // so new posts get a timestamp; editing keeps the date exactly as written
+  let fullDate = date;
+  const prior = file && fs.existsSync(mdPath) ? parseFrontMatter(fs.readFileSync(mdPath, 'utf8')).fm.date : null;
+  if (prior && prior.slice(0, 10) === date) fullDate = prior;
+  else {
+    const now = new Date();
+    fullDate = `${date} ${[now.getHours(), now.getMinutes(), now.getSeconds()].map(n => String(n).padStart(2, '0')).join(':')}`;
+  }
+
   const fmTitle = title.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-  const md = `---\nlayout: post\ntitle: "${fmTitle}"\ndate: ${date}\npermalink: /blog/${slug}/\n---\n\n${parts.join('\n\n')}\n`;
+  const md = `---\nlayout: post\ntitle: "${fmTitle}"\ndate: ${fullDate}\npermalink: /blog/${slug}/\n---\n\n${parts.join('\n\n')}\n`;
   fs.mkdirSync(POSTS_DIR, { recursive: true });
   fs.writeFileSync(mdPath, md, 'utf8');
   wrote.unshift(path.relative(ROOT, mdPath).replace(/\\/g, '/'));
@@ -194,7 +204,7 @@ const server = http.createServer(async (req, res) => {
       const posts = fs.existsSync(POSTS_DIR)
         ? fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md')).sort().reverse().map(f => {
             const { fm } = parseFrontMatter(fs.readFileSync(path.join(POSTS_DIR, f), 'utf8'));
-            return { file: f, title: fm.title || f, date: fm.date || '' };
+            return { file: f, title: fm.title || f, date: (fm.date || '').slice(0, 10) };
           })
         : [];
       return send(res, 200, posts);
@@ -206,7 +216,7 @@ const server = http.createServer(async (req, res) => {
       const { fm, body } = parseFrontMatter(fs.readFileSync(fp, 'utf8'));
       const slug = ((fm.permalink || '').match(/^\/blog\/([a-z0-9-]+)\/?$/) || [])[1]
         || file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
-      return send(res, 200, { file, title: fm.title || '', date: fm.date || '', slug, blocks: parseBody(body) });
+      return send(res, 200, { file, title: fm.title || '', date: (fm.date || '').slice(0, 10), slug, blocks: parseBody(body) });
     }
     if (req.method === 'POST' && p === '/api/upload') {
       const name = url.searchParams.get('name') || 'file';
