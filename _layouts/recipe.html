@@ -1,0 +1,88 @@
+---
+layout: default
+---
+<div class="writing">
+<div class="folio ruled recipe">
+  <div class="vline vline-l" aria-hidden="true"></div>
+  <div class="vline vline-r" aria-hidden="true"></div>
+
+  <div class="recipe-head">
+    <div class="post-date">{{ page.date | date: "%B %Y" }}</div>
+    <h2 class="folio-title">{{ page.title }}</h2>
+    <div class="recipe-meta">
+      {% if page.region and page.region != "" %}<span><span class="rk">Region</span> {{ page.region }}</span>{% endif %}
+      {% if page.period and page.period != "" %}<span><span class="rk">Period</span> {{ page.period }}</span>{% endif %}
+      {% if page.source and page.source != "" %}<span><span class="rk">Source</span> {{ page.source | markdownify | remove: '<p>' | remove: '</p>' }}</span>{% endif %}
+    </div>
+  </div>
+  <div class="m-desktop"></div>
+
+  <div class="recipe-essay">
+    {% if page.photo and page.photo != "" %}
+    <figure class="recipe-photo m-phone">
+      <div class="miniframe"><img src="{{ page.photo | relative_url }}" alt="{{ page.photo_alt }}"></div>
+      {% if page.note and page.note != "" %}<div class="mg">{{ page.note }}</div>{% endif %}
+    </figure>
+    {% elsif page.note and page.note != "" %}
+    <div class="mg m-phone recipe-note-phone">{{ page.note }}</div>
+    {% endif %}
+    {{ content }}
+  </div>
+  <div class="margin-item m-desktop recipe-photo-block">
+    {% if page.photo and page.photo != "" %}
+    <div class="miniframe"><img src="{{ page.photo | relative_url }}" alt="{{ page.photo_alt }}"></div>
+    {% endif %}
+    {% if page.note and page.note != "" %}<div class="mg">{{ page.note }}</div>{% endif %}
+  </div>
+
+  {% if page.original and page.original != "" %}
+  <div class="rubric-label">The original, in plain English</div>
+  <div class="m-desktop"></div>
+  <blockquote class="original">
+    {{ page.original | markdownify }}
+    {% if page.original_source and page.original_source != "" %}<div class="original-source">{{ page.original_source | markdownify | remove: '<p>' | remove: '</p>' }}</div>{% endif %}
+  </blockquote>
+  <div class="m-desktop"></div>
+  {% endif %}
+
+  <div class="rubric-label">The modern recipe</div>
+  <div class="m-desktop"></div>
+
+  {% if page.serves != "" or page.active != "" or page.total != "" or page.protein != "" %}
+  <div class="stats">
+    {% if page.serves and page.serves != "" %}<div class="stat"><div class="stat-k">Serves</div><div class="stat-v">{{ page.serves }}</div></div>{% endif %}
+    {% if page.active and page.active != "" %}<div class="stat"><div class="stat-k">Active</div><div class="stat-v">{{ page.active }}</div></div>{% endif %}
+    {% if page.total and page.total != "" %}<div class="stat"><div class="stat-k">Total</div><div class="stat-v">{{ page.total }}</div></div>{% endif %}
+    {% if page.protein and page.protein != "" %}<div class="stat"><div class="stat-k">Protein</div><div class="stat-v">{{ page.protein }}</div></div>{% endif %}
+  </div>
+  <div class="m-desktop"></div>
+  {% endif %}
+
+  <div class="recipe-body">
+    <div class="ingredients">
+      {% for g in page.ingredients %}
+      {% if g.label and g.label != "" %}<div class="ing-label">{{ g.label }}</div>{% endif %}
+      <ul class="ing-list">
+        {% for it in g.items %}<li>{{ it }}</li>{% endfor %}
+      </ul>
+      {% endfor %}
+      {% if page.ingredient_note and page.ingredient_note != "" %}<div class="ing-note">{{ page.ingredient_note }}</div>{% endif %}
+    </div>
+    <ol class="steps">
+      {% for s in page.steps %}
+      <li>{% if s.lead and s.lead != "" %}<span class="step-lead">{{ s.lead }}</span> {% endif %}{{ s.text | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  {% if page.fighter and page.fighter != "" %}
+  <div class="fighter">
+    <div class="rubric-label">For the fighter</div>
+    {{ page.fighter | markdownify }}
+  </div>
+  <div class="m-desktop"></div>
+  {% endif %}
+
+  <div class="catchword"><a href="{{ '/blog/' | relative_url }}">contents</a></div>
+</div>
+</div>

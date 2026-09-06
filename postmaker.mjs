@@ -49,13 +49,53 @@ function readBody(req) {
 
 function parseFrontMatter(md) {
   const m = md.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
-  if (!m) return { fm: {}, body: md };
+  if (!m) return { fm: {}, raw: {}, body: md };
   const fm = {};
+  const raw = {};
   for (const line of m[1].split(/\r?\n/)) {
     const kv = line.match(/^(\w[\w-]*):\s*(.*)$/);
-    if (kv) fm[kv[1]] = kv[2].replace(/^"(.*)"$/, '$1');
+    if (kv) { raw[kv[1]] = kv[2]; fm[kv[1]] = kv[2].replace(/^"(.*)"$/, '$1'); }
   }
-  return { fm, body: md.slice(m[0].length) };
+  return { fm, raw, body: md.slice(m[0].length) };
+}
+
+// ---- recipes: structured fields live in the front matter as JSON values
+// (YAML reads JSON), the essay is the body. Same file shape as a post otherwise.
+
+const RECIPE_KEYS = ['region', 'period', 'source', 'note', 'photo', 'photo_alt', 'serves', 'active', 'total',
+  'protein', 'original', 'original_source', 'ingredients', 'ingredient_note', 'steps', 'fighter'];
+const RECIPE_LISTS = new Set(['ingredients', 'steps']);
+
+function recipeValue(key, rawVal) {
+  if (rawVal == null || rawVal === '') return RECIPE_LISTS.has(key) ? [] : '';
+  const t = rawVal.trim();
+  if (/^["[{]/.test(t)) { try { return JSON.parse(t); } catch { /* fall through */ } }
+  return RECIPE_LISTS.has(key) ? [] : t;
+}
+
+function recipeFromFrontMatter(raw) {
+  const r = {};
+  for (const k of RECIPE_KEYS) r[k] = recipeValue(k, raw[k]);
+  r.ingredients = (Array.isArray(r.ingredients) ? r.ingredients : []).map(g => ({
+    label: String(g?.label || ''), items: Array.isArray(g?.items) ? g.items.map(String) : [] }));
+  r.steps = (Array.isArray(r.steps) ? r.steps : []).map(s => ({ lead: String(s?.lead || ''), text: String(s?.text || '') }));
+  return r;
+}
+
+function cleanRecipe(r) {
+  const out = {};
+  for (const k of RECIPE_KEYS) {
+    if (k === 'ingredients') {
+      out[k] = (Array.isArray(r?.ingredients) ? r.ingredients : [])
+        .map(g => ({ label: String(g?.label || '').trim(), items: (Array.isArray(g?.items) ? g.items : []).map(s => String(s).trim()).filter(Boolean) }))
+        .filter(g => g.label || g.items.length);
+    } else if (k === 'steps') {
+      out[k] = (Array.isArray(r?.steps) ? r.steps : [])
+        .map(s => ({ lead: String(s?.lead || '').trim(), text: String(s?.text || '').trim() }))
+        .filter(s => s.lead || s.text);
+    } else out[k] = String(r?.[k] ?? '').trim();
+  }
+  return out;
 }
 
 function parseFigure(html) {
@@ -122,6 +162,8 @@ function nextMediaName(dir, prefix, ext, taken) {
 
 function savePost(payload) {
   const { title, slug, date, blocks, force, file } = payload;
+  const isRecipe = payload.type === 'recipe';
+  const recipe = isRecipe ? cleanRecipe(payload.recipe) : null;
   if (!title || !slug || !date || !Array.isArray(blocks)) throw new Error('missing fields');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('bad date');
   if (!/^[a-z0-9-]+$/.test(slug)) throw new Error('bad slug');
@@ -135,6 +177,24 @@ function savePost(payload) {
   const staged = { img: [], video: [] };
   const resolved = {}; // stagedId -> final src
   const wrote = [];
+
+  // the recipe photo is staged like any plate and lands in the same folder
+  if (isRecipe && payload.photo && payload.photo.staged) {
+    const from = path.join(STAGE, path.basename(payload.photo.staged));
+    if (!fs.existsSync(from)) throw new Error(`staged file missing: ${payload.photo.staged}`);
+    const ext = path.extname(payload.photo.staged).toLowerCase();
+    if (!IMG_EXT.has(ext)) throw new Error('the recipe photo must be an image');
+    const name = nextMediaName(IMG_DIR, prefix, ext, staged.img);
+    staged.img.push(name);
+    fs.mkdirSync(IMG_DIR, { recursive: true });
+    fs.copyFileSync(from, path.join(IMG_DIR, name));
+    resolved[payload.photo.staged] = '/assets/img/posts/' + name;
+    recipe.photo = resolved[payload.photo.staged];
+    wrote.push(path.relative(ROOT, path.join(IMG_DIR, name)).replace(/\\/g, '/'));
+  } else if (isRecipe) {
+    recipe.photo = String(payload.photo?.src || '').trim();
+  }
+  if (isRecipe) recipe.photo_alt = String(payload.photo?.alt || '').trim();
 
   // first pass: name and copy staged media
   for (const b of blocks) {
@@ -174,7 +234,12 @@ function savePost(payload) {
   }
 
   const fmTitle = title.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-  const md = `---\nlayout: post\ntitle: "${fmTitle}"\ndate: ${fullDate}\npermalink: /blog/${slug}/\n---\n\n${parts.join('\n\n')}\n`;
+  let head = `---\nlayout: ${isRecipe ? 'recipe' : 'post'}\ntitle: "${fmTitle}"\ndate: ${fullDate}\npermalink: /blog/${slug}/\n`;
+  if (isRecipe) {
+    head += 'categories: recipes\n';
+    for (const k of RECIPE_KEYS) head += `${k}: ${JSON.stringify(recipe[k])}\n`;
+  }
+  const md = `${head}---\n\n${parts.join('\n\n')}\n`;
   fs.mkdirSync(POSTS_DIR, { recursive: true });
   fs.writeFileSync(mdPath, md, 'utf8');
   wrote.unshift(path.relative(ROOT, mdPath).replace(/\\/g, '/'));
@@ -204,7 +269,7 @@ const server = http.createServer(async (req, res) => {
       const posts = fs.existsSync(POSTS_DIR)
         ? fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md')).sort().reverse().map(f => {
             const { fm } = parseFrontMatter(fs.readFileSync(path.join(POSTS_DIR, f), 'utf8'));
-            return { file: f, title: fm.title || f, date: (fm.date || '').slice(0, 10) };
+            return { file: f, title: fm.title || f, date: (fm.date || '').slice(0, 10), type: fm.layout === 'recipe' ? 'recipe' : 'post' };
           })
         : [];
       return send(res, 200, posts);
@@ -213,10 +278,12 @@ const server = http.createServer(async (req, res) => {
       const file = path.basename(url.searchParams.get('file') || '');
       const fp = path.join(POSTS_DIR, file);
       if (!file.endsWith('.md') || !fs.existsSync(fp)) return send(res, 404, { error: 'not found' });
-      const { fm, body } = parseFrontMatter(fs.readFileSync(fp, 'utf8'));
+      const { fm, raw, body } = parseFrontMatter(fs.readFileSync(fp, 'utf8'));
       const slug = ((fm.permalink || '').match(/^\/blog\/([a-z0-9-]+)\/?$/) || [])[1]
         || file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
-      return send(res, 200, { file, title: fm.title || '', date: (fm.date || '').slice(0, 10), slug, blocks: parseBody(body) });
+      const out = { file, title: fm.title || '', date: (fm.date || '').slice(0, 10), slug, blocks: parseBody(body), type: 'post' };
+      if (fm.layout === 'recipe') { out.type = 'recipe'; out.recipe = recipeFromFrontMatter(raw); }
+      return send(res, 200, out);
     }
     if (req.method === 'POST' && p === '/api/upload') {
       const name = url.searchParams.get('name') || 'file';

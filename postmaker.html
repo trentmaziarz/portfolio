@@ -32,6 +32,25 @@
   .pm-bar #pmSaveBtn { background: #B8963E; color: #22141b; font-weight: 600; border-color: #8A6E2A; }
   .pm-bar #pmSaveBtn:hover { background: #c9a850; }
   .pm-spacer { flex: 1; }
+  .pm-tabs { display: flex; border: 1px solid #5B2A3A; border-radius: 4px; overflow: hidden; }
+  .pm-tabs .pm-tab { border: 0; border-radius: 0; padding: 4px 12px; background: #3a2530; }
+  .pm-tabs .pm-tab + .pm-tab { border-left: 1px solid #5B2A3A; }
+  .pm-tabs .pm-tab-on { background: #B8963E; color: #22141b; font-weight: 600; }
+  /* recipe editor affordances */
+  .pm-list-btn { font: 11px/1 -apple-system, "Segoe UI", sans-serif; color: #5B2A3A;
+    background: rgba(255,255,255,.75); border: 1px dashed rgba(91,42,58,.4); border-radius: 10px;
+    padding: 3px 10px; cursor: pointer; margin: 4px 6px 4px 0; }
+  .pm-list-btn:hover { background: #fff; }
+  .pm-x { font: 11px/1 -apple-system, "Segoe UI", sans-serif; color: #8B2020; background: none; border: 0;
+    cursor: pointer; opacity: 0; margin-left: 6px; vertical-align: middle; }
+  li:hover > .pm-x, .pm-group:hover > .ing-label > .pm-x { opacity: .8; }
+  .ing-text, .ing-label-text { display: inline-block; min-width: 40px; }
+  .pm-photo-drop { cursor: pointer; }
+  .pm-photo-drop.pm-empty { display: flex; align-items: center; justify-content: center; text-align: center;
+    font: italic 13px/1.4 var(--font-display); color: var(--ink-muted); }
+  .pm-photo-drop.pm-droptarget { outline: 2px dashed rgba(139,32,32,.5); outline-offset: 4px; }
+  .recipe .pm-block .pm-ctl { left: -46px; }
+  .stat-v[contenteditable]:empty::before, .ing-label[contenteditable]:empty::before { font-style: italic; }
   #pmStatus { opacity: .8; max-width: 420px; }
   #pmStatus.pm-ok { color: #a8d8a8; }
   #pmStatus.pm-err { color: #e8a0a0; }
@@ -80,13 +99,16 @@
     background: rgba(255,255,255,.55); border: 1px dashed rgba(91,42,58,.35); border-radius: 4px; padding: 8px; }
   .pm-droptarget { outline: 2px dashed rgba(139,32,32,.5); outline-offset: 8px; }
 
-  /* keep the folio single-column: this is a post editor, glosses live on home */
-  .run-head a { pointer-events: none; }
+  .run-head a, .catchword a { pointer-events: none; }
 </style>
 </head>
 <body>
 
 <div class="pm-bar">
+  <div class="pm-tabs" role="tablist">
+    <button id="pmTabPost" class="pm-tab pm-tab-on" role="tab">Post</button>
+    <button id="pmTabRecipe" class="pm-tab" role="tab">Recipe</button>
+  </div>
   <select id="pmPostSel"><option value="">New post…</option></select>
   <label for="pmSlugIn">slug</label><input id="pmSlugIn" spellcheck="false">
   <label for="pmDateIn">date</label><input id="pmDateIn" type="date">
@@ -116,11 +138,7 @@
       </nav>
     </header>
     <div class="headrule" aria-hidden="true"></div>
-    <article>
-      <div class="post-date" id="pmDateShow"></div>
-      <h2 class="page-title" id="pmTitle" contenteditable="true" data-ph="Title" spellcheck="true"></h2>
-      <div class="page-text" id="pmBlocks"></div>
-    </article>
+    <div id="pmPage"></div>
     <footer class="site-footer">
       <div class="footer-divider" aria-hidden="true">
         <span class="rule"></span>
@@ -142,7 +160,8 @@
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const blocksEl = $('pmBlocks');
+  let blocksEl = null;   // the essay/body block list of the current page (set by buildPage)
+  let mode = 'post';     // 'post' | 'recipe'
   let editingFile = null;   // set when an existing post is open
   let slugTouched = false;  // stop auto-slugging once the user edits it
   let dirty = false;
@@ -168,6 +187,7 @@
       if (n.nodeType === Node.TEXT_NODE) { out += n.textContent; continue; }
       if (n.nodeType !== Node.ELEMENT_NODE) continue;
       const tag = n.tagName;
+      if (tag === 'BUTTON') continue;
       if (tag === 'BR') out += '\n';
       else if (tag === 'EM' || tag === 'I') out += '*' + htmlToMd(n) + '*';
       else if (tag === 'STRONG' || tag === 'B') out += '**' + htmlToMd(n) + '**';
@@ -348,27 +368,30 @@
   let dragBlock = null;
   const clearDropline = () => blocksEl.querySelectorAll('.pm-dropline').forEach(b => b.classList.remove('pm-dropline'));
 
-  blocksEl.addEventListener('dragover', e => {
-    e.preventDefault();
-    if (dragBlock) {
-      clearDropline();
+  // the block list is rebuilt per page shape, so its listeners attach when it is built
+  function wireBlocks(el) {
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragBlock) {
+        clearDropline();
+        const t = e.target.closest('.pm-block');
+        if (t && t !== dragBlock) t.classList.add('pm-dropline');
+      } else el.classList.add('pm-droptarget');
+    });
+    el.addEventListener('dragleave', e => { if (e.target === el) el.classList.remove('pm-droptarget'); });
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('pm-droptarget');
       const t = e.target.closest('.pm-block');
-      if (t && t !== dragBlock) t.classList.add('pm-dropline');
-    } else blocksEl.classList.add('pm-droptarget');
-  });
-  blocksEl.addEventListener('dragleave', e => { if (e.target === blocksEl) blocksEl.classList.remove('pm-droptarget'); });
-  blocksEl.addEventListener('drop', e => {
-    e.preventDefault();
-    blocksEl.classList.remove('pm-droptarget');
-    const t = e.target.closest('.pm-block');
-    if (dragBlock) {
-      clearDropline();
-      if (t && t !== dragBlock) { blocksEl.insertBefore(dragBlock, t); ensureAdders(); markDirty(); }
-      return;
-    }
-    const files = [...(e.dataTransfer?.files || [])];
-    if (files.length) uploadFiles(files, t || null);
-  });
+      if (dragBlock) {
+        clearDropline();
+        if (t && t !== dragBlock) { el.insertBefore(dragBlock, t); ensureAdders(); markDirty(); }
+        return;
+      }
+      const files = [...(e.dataTransfer?.files || [])];
+      if (files.length) uploadFiles(files, t || null);
+    });
+  }
 
   // ---- formatting buttons
 
@@ -440,10 +463,10 @@
   // ---- title, slug, date
 
   const slugify = s => s.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-  $('pmTitle').addEventListener('input', () => {
+  function onTitleInput() {
     if (!slugTouched && !editingFile) $('pmSlugIn').value = slugify($('pmTitle').textContent);
     markDirty();
-  });
+  }
   $('pmSlugIn').addEventListener('input', () => { slugTouched = true; markDirty(); });
   $('pmDateIn').addEventListener('change', () => { showDate(); markDirty(); });
 
@@ -460,10 +483,249 @@
     s.className = cls === 'ok' ? 'pm-ok' : cls === 'err' ? 'pm-err' : '';
   }
 
+  // ---- the page itself: post shape or recipe shape
+
+  const RECIPE_KEYS = ['region', 'period', 'source', 'note', 'photo', 'photo_alt', 'serves', 'active', 'total',
+    'protein', 'original', 'original_source', 'ingredients', 'ingredient_note', 'steps', 'fighter'];
+
+  function ed(tag, cls, ph, text) {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    el.contentEditable = 'true';
+    el.dataset.ph = ph;
+    el.spellcheck = true;
+    el.innerHTML = mdToHtml(text || '');
+    el.addEventListener('input', markDirty);
+    return el;
+  }
+
+  function xBtn(title, fn) {
+    const b = document.createElement('button');
+    b.className = 'pm-x'; b.textContent = '✕'; b.title = title; b.tabIndex = -1;
+    b.addEventListener('click', fn);
+    return b;
+  }
+  function addBtn(txt, fn) {
+    const b = document.createElement('button');
+    b.className = 'pm-list-btn'; b.textContent = txt; b.tabIndex = -1;
+    b.addEventListener('click', fn);
+    return b;
+  }
+
+  function buildPage(kind, data) {
+    mode = kind;
+    $('pmTabPost').classList.toggle('pm-tab-on', kind === 'post');
+    $('pmTabRecipe').classList.toggle('pm-tab-on', kind === 'recipe');
+    $('pmSaveBtn').textContent = kind === 'recipe' ? 'Make recipe' : 'Make post';
+    const page = $('pmPage');
+    page.innerHTML = '';
+    if (kind === 'post') {
+      page.innerHTML = '<article><div class="post-date" id="pmDateShow"></div>' +
+        '<h2 class="page-title" id="pmTitle" contenteditable="true" data-ph="Title" spellcheck="true"></h2>' +
+        '<div class="page-text" id="pmBlocks"></div></article>';
+      blocksEl = $('pmBlocks');
+      wireBlocks(blocksEl);
+      $('pmTitle').addEventListener('input', onTitleInput);
+      return;
+    }
+    const r = data || {};
+    const w = document.createElement('div'); w.className = 'writing';
+    const folio = document.createElement('div'); folio.className = 'folio ruled recipe';
+    w.appendChild(folio);
+    folio.innerHTML = '<div class="vline vline-l" aria-hidden="true"></div><div class="vline vline-r" aria-hidden="true"></div>';
+
+    // head
+    const head = document.createElement('div'); head.className = 'recipe-head';
+    head.innerHTML = '<div class="post-date" id="pmDateShow"></div>';
+    const title = ed('h2', 'folio-title', 'Title', ''); title.id = 'pmTitle'; title.addEventListener('input', onTitleInput);
+    head.appendChild(title);
+    const meta = document.createElement('div'); meta.className = 'recipe-meta';
+    for (const [k, label] of [['region', 'Region'], ['period', 'Period'], ['source', 'Source']]) {
+      const span = document.createElement('span');
+      span.innerHTML = '<span class="rk">' + label + '</span> ';
+      const f = ed('span', 'pm-f', label.toLowerCase(), r[k]); f.dataset.key = k;
+      span.appendChild(f); meta.appendChild(span);
+    }
+    head.appendChild(meta);
+    folio.appendChild(head);
+    folio.insertAdjacentHTML('beforeend', '<div class="m-desktop"></div>');
+
+    // essay + margin (photo, note)
+    const essay = document.createElement('div'); essay.className = 'recipe-essay'; essay.id = 'pmBlocks';
+    folio.appendChild(essay);
+    blocksEl = essay;
+    wireBlocks(essay);
+    const mb = document.createElement('div'); mb.className = 'margin-item m-desktop recipe-photo-block';
+    const frame = document.createElement('div'); frame.className = 'miniframe pm-photo-drop'; frame.id = 'pmPhoto';
+    frame.title = 'Click or drop a photo';
+    setPhoto(frame, r.photo ? { src: r.photo } : null);
+    mb.appendChild(frame);
+    const alt = document.createElement('input'); alt.className = 'pm-alt'; alt.id = 'pmPhotoAlt';
+    alt.placeholder = 'alt text: describe the photo'; alt.value = r.photo_alt || '';
+    alt.addEventListener('input', markDirty);
+    mb.appendChild(alt);
+    const note = ed('div', 'mg pm-f', 'margin note, in the small hand', r.note); note.dataset.key = 'note';
+    note.style.marginTop = '8px';
+    mb.appendChild(note);
+    folio.appendChild(mb);
+
+    // original
+    folio.insertAdjacentHTML('beforeend', '<div class="rubric-label">The original, in plain English</div><div class="m-desktop"></div>');
+    const bq = document.createElement('blockquote'); bq.className = 'original';
+    const op = ed('p', 'pm-f', 'The historical recipe, paraphrased into plain English.', r.original); op.dataset.key = 'original';
+    bq.appendChild(op);
+    const os = ed('div', 'original-source pm-f', 'Paraphrased from ...', r.original_source); os.dataset.key = 'original_source';
+    bq.appendChild(os);
+    folio.appendChild(bq);
+    folio.insertAdjacentHTML('beforeend', '<div class="m-desktop"></div>');
+
+    // stats
+    folio.insertAdjacentHTML('beforeend', '<div class="rubric-label">The modern recipe</div><div class="m-desktop"></div>');
+    const stats = document.createElement('div'); stats.className = 'stats';
+    for (const [k, label, ph] of [['serves', 'Serves', '4'], ['active', 'Active', '25 minutes'], ['total', 'Total', '50 minutes'], ['protein', 'Protein', '~30 g per serving']]) {
+      const st = document.createElement('div'); st.className = 'stat';
+      st.innerHTML = '<div class="stat-k">' + label + '</div>';
+      const v = ed('div', 'stat-v pm-f', ph, r[k]); v.dataset.key = k;
+      st.appendChild(v); stats.appendChild(st);
+    }
+    folio.appendChild(stats);
+    folio.insertAdjacentHTML('beforeend', '<div class="m-desktop"></div>');
+
+    // ingredients + steps
+    const body = document.createElement('div'); body.className = 'recipe-body';
+    const ing = document.createElement('div'); ing.className = 'ingredients'; ing.id = 'pmIngredients';
+    const groups = (r.ingredients && r.ingredients.length) ? r.ingredients : [{ label: '', items: [''] }];
+    for (const g of groups) ing.appendChild(makeGroup(g));
+    ing.appendChild(addBtn('+ group', () => { ing.insertBefore(makeGroup({ label: '', items: [''] }), ing.querySelector('.pm-list-btn')); markDirty(); }));
+    const inote = ed('div', 'ing-note pm-f', 'a note on the ingredients (optional)', r.ingredient_note); inote.dataset.key = 'ingredient_note';
+    ing.appendChild(inote);
+    body.appendChild(ing);
+    const ol = document.createElement('ol'); ol.className = 'steps'; ol.id = 'pmSteps';
+    for (const s of (r.steps && r.steps.length ? r.steps : [{ lead: '', text: '' }])) ol.appendChild(makeStep(s));
+    body.appendChild(ol);
+    const addStep = addBtn('+ step', () => { ol.appendChild(makeStep({ lead: '', text: '' })); ol.lastElementChild.querySelector('.step-lead').focus(); markDirty(); });
+    body.appendChild(addStep);
+    folio.appendChild(body);
+
+    // fighter
+    const fi = document.createElement('div'); fi.className = 'fighter';
+    fi.innerHTML = '<div class="rubric-label">For the fighter</div>';
+    const fp = ed('p', 'pm-f', 'What the dish delivers, and when in the week it earns its place.', r.fighter); fp.dataset.key = 'fighter';
+    fi.appendChild(fp);
+    folio.appendChild(fi);
+    folio.insertAdjacentHTML('beforeend', '<div class="m-desktop"></div><div class="catchword"><a href="#">contents</a></div>');
+    page.appendChild(w);
+  }
+
+  function makeGroup(g) {
+    const wrap = document.createElement('div'); wrap.className = 'pm-group';
+    const label = document.createElement('div'); label.className = 'ing-label';
+    label.appendChild(ed('span', 'ing-label-text', 'for the ...', g.label));
+    label.appendChild(xBtn('Delete group', () => { if (confirm('Delete this ingredient group?')) { wrap.remove(); markDirty(); } }));
+    wrap.appendChild(label);
+    const ul = document.createElement('ul'); ul.className = 'ing-list';
+    for (const it of (g.items.length ? g.items : [''])) ul.appendChild(makeItem(it));
+    wrap.appendChild(ul);
+    wrap.appendChild(addBtn('+ line', () => { const li = makeItem(''); ul.appendChild(li); li.firstChild.focus(); markDirty(); }));
+    return wrap;
+  }
+  // the editable text sits in a span so the delete button never enters the text
+  function makeItem(text) {
+    const li = document.createElement('li');
+    li.appendChild(ed('span', 'ing-text', '2 cups ...', text));
+    li.appendChild(xBtn('Delete line', () => { li.remove(); markDirty(); }));
+    return li;
+  }
+  function makeStep(s) {
+    const li = document.createElement('li');
+    const lead = ed('span', 'step-lead', 'Do the thing.', s.lead);
+    const text = ed('span', 'step-text', 'How, exactly.', s.text);
+    li.appendChild(lead); li.appendChild(document.createTextNode(' ')); li.appendChild(text);
+    li.appendChild(xBtn('Delete step', () => { li.remove(); markDirty(); }));
+    return li;
+  }
+
+  // the recipe photo: one image in the margin frame
+  function setPhoto(frame, p) {
+    frame.innerHTML = '';
+    delete frame.dataset.staged; delete frame.dataset.src;
+    if (p && (p.url || p.src)) {
+      const img = document.createElement('img');
+      img.src = p.url || p.src;
+      frame.appendChild(img);
+      frame.classList.remove('pm-empty');
+      if (p.staged) frame.dataset.staged = p.staged;
+      if (p.src) frame.dataset.src = p.src;
+    } else {
+      frame.classList.add('pm-empty');
+      frame.textContent = 'drop a photo here';
+    }
+  }
+  async function uploadPhoto(file) {
+    const frame = $('pmPhoto');
+    if (!frame) return;
+    setStatus('uploading ' + file.name + '…');
+    const res = await fetch('/api/upload?name=' + encodeURIComponent(file.name), { method: 'POST', body: file });
+    const j = await res.json();
+    if (!res.ok || j.kind !== 'img') { setStatus(j.error || 'the recipe photo must be an image', 'err'); return; }
+    setPhoto(frame, { staged: j.id, url: j.url });
+    markDirty(); setStatus('');
+  }
+  document.addEventListener('click', e => {
+    const f = e.target.closest('#pmPhoto');
+    if (!f) return;
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    inp.addEventListener('change', () => { if (inp.files[0]) uploadPhoto(inp.files[0]); });
+    inp.click();
+  });
+  document.addEventListener('dragover', e => { const f = e.target.closest('#pmPhoto'); if (f) { e.preventDefault(); f.classList.add('pm-droptarget'); } });
+  document.addEventListener('dragleave', e => { const f = e.target.closest('#pmPhoto'); if (f) f.classList.remove('pm-droptarget'); });
+  document.addEventListener('drop', e => {
+    const f = e.target.closest('#pmPhoto');
+    if (!f) return;
+    e.preventDefault(); e.stopPropagation();
+    f.classList.remove('pm-droptarget');
+    const file = [...(e.dataTransfer?.files || [])][0];
+    if (file) uploadPhoto(file);
+  }, true);
+
+  // Enter in an ingredient line adds a line; Enter in a step adds a step
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || mode !== 'recipe') return;
+    const li = e.target.closest('.ing-list li');
+    if (li) { e.preventDefault(); const n = makeItem(''); li.after(n); n.firstChild.focus(); markDirty(); return; }
+    const st = e.target.closest('.steps li');
+    if (st && e.target.classList.contains('step-text')) { e.preventDefault(); const n = makeStep({ lead: '', text: '' }); st.after(n); n.querySelector('.step-lead').focus(); markDirty(); }
+  }, true);
+
+  function collectRecipe() {
+    const r = {};
+    document.querySelectorAll('#pmPage .pm-f').forEach(el => { r[el.dataset.key] = htmlToMd(el).trim(); });
+    r.ingredients = [...document.querySelectorAll('#pmIngredients .pm-group')].map(g => ({
+      label: plainCaption(g.querySelector('.ing-label-text')),
+      items: [...g.querySelectorAll('.ing-list li .ing-text')].map(el => plainCaption(el)).filter(Boolean),
+    }));
+    r.steps = [...document.querySelectorAll('#pmSteps li')].map(li => ({
+      lead: plainCaption(li.querySelector('.step-lead')), text: htmlToMd(li.querySelector('.step-text')).trim() }));
+    const frame = $('pmPhoto');
+    const photo = { staged: frame?.dataset.staged || undefined, src: frame?.dataset.src || undefined, alt: $('pmPhotoAlt')?.value || '' };
+    return { recipe: r, photo };
+  }
+
+  $('pmTabPost').addEventListener('click', () => switchMode('post'));
+  $('pmTabRecipe').addEventListener('click', () => switchMode('recipe'));
+  function switchMode(kind) {
+    if (kind === mode) return;
+    if (dirty && !confirm('Discard unsaved changes?')) return;
+    $('pmPostSel').value = '';
+    clearPost(kind);
+  }
+
   // ---- load / new
 
-  function clearPost() {
-    blocksEl.innerHTML = '';
+  function clearPost(kind) {
+    buildPage(kind || mode);
     editingFile = null; slugTouched = false; dirty = false;
     $('pmTitle').textContent = '';
     $('pmSlugIn').value = '';
@@ -478,7 +740,7 @@
     const res = await fetch('/api/post?file=' + encodeURIComponent(file));
     const j = await res.json();
     if (!res.ok) { setStatus(j.error || 'could not open post', 'err'); return; }
-    blocksEl.innerHTML = '';
+    buildPage(j.type === 'recipe' ? 'recipe' : 'post', j.recipe);
     editingFile = j.file; slugTouched = true; dirty = false;
     $('pmTitle').textContent = j.title;
     $('pmSlugIn').value = j.slug;
@@ -500,7 +762,7 @@
     sel.innerHTML = '<option value="">New post…</option>';
     for (const p of posts) {
       const o = document.createElement('option');
-      o.value = p.file; o.textContent = p.title + ' (' + p.date + ')';
+      o.value = p.file; o.textContent = p.title + ' (' + p.date + ')' + (p.type === 'recipe' ? ' · recipe' : '');
       sel.appendChild(o);
     }
     sel.value = selected || '';
@@ -541,9 +803,12 @@
     if (!title) return setStatus('the post needs a title', 'err');
     if (!/^[a-z0-9-]+$/.test(slug)) return setStatus('slug must be lowercase letters, numbers, hyphens', 'err');
     let blocks = collectBlocks();
+    const extra = mode === 'recipe' ? collectRecipe() : null;
+    const recipeTexts = extra ? [...Object.values(extra.recipe).filter(v => typeof v === 'string'),
+      ...extra.recipe.ingredients.flatMap(g => [g.label, ...g.items]), ...extra.recipe.steps.flatMap(s => [s.lead, s.text])] : [];
 
     // house rule: no em-dashes, ever
-    const dashed = [title, ...blocks.map(b => b.text || b.caption || '')].some(t => /—/.test(t));
+    const dashed = [title, ...blocks.map(b => b.text || b.caption || ''), ...recipeTexts].some(t => /—/.test(t));
     if (dashed) {
       if (!confirm('Em-dash found. House rule says no em-dashes; replace each with a comma?')) {
         return setStatus('fix the em-dashes, then save', 'err');
@@ -551,17 +816,22 @@
       const fix = t => t.replace(/\s*—\s*/g, ', ');
       blocks = blocks.map(b => ({ ...b, text: b.text && fix(b.text), caption: b.caption && fix(b.caption) }));
       // reflect the fix in the editor too
-      blocksEl.querySelectorAll('[contenteditable], textarea').forEach(el => {
+      document.querySelectorAll('#pmPage [contenteditable], #pmPage textarea').forEach(el => {
         if (el.tagName === 'TEXTAREA') el.value = fix(el.value);
         else if (/—/.test(el.innerHTML)) el.innerHTML = el.innerHTML.replace(/\s*—\s*/g, ', ');
       });
       $('pmTitle').textContent = fix($('pmTitle').textContent);
+      if (extra) {
+        const fixed = collectRecipe();
+        extra.recipe = fixed.recipe; extra.photo = fixed.photo;
+      }
     }
 
     const noAlt = blocks.some(b => b.type === 'img' && !(b.alt || '').trim());
     if (noAlt && !confirm('Some photos have no alt text. Save anyway?')) return setStatus('add alt text, then save', 'err');
 
-    const payload = { title, slug, date, blocks, file: editingFile || undefined };
+    const payload = { title, slug, date, blocks, file: editingFile || undefined, type: mode };
+    if (extra) { payload.recipe = extra.recipe; payload.photo = extra.photo; }
     setStatus('saving…');
     let res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (res.status === 409) {
@@ -572,6 +842,12 @@
     if (!res.ok) return setStatus(j.error || 'save failed', 'err');
 
     // staged media is now real: point the editor at the final files
+    const frame = $('pmPhoto');
+    if (frame && frame.dataset.staged && j.resolved[frame.dataset.staged]) {
+      const src = j.resolved[frame.dataset.staged];
+      delete frame.dataset.staged; frame.dataset.src = src;
+      const img = frame.querySelector('img'); if (img) img.src = src;
+    }
     for (const w of blocksEl.querySelectorAll('.pm-block[data-staged]')) {
       const src = j.resolved[w.dataset.staged];
       if (src) {
@@ -587,7 +863,7 @@
   });
 
   // ---- go
-  clearPost();
+  clearPost('post');
   refreshPostList();
 })();
 </script>

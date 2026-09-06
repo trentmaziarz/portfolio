@@ -13,14 +13,16 @@ redirect_from: /posts/
   <div class="m-desktop"></div>
 
   {% for post in site.posts %}
+  {% assign hue = forloop.index0 | modulo: 3 %}
   <div class="toc-entry">
-    <div class="post-date m-phone">{{ post.date | date: "%B %Y" }}</div>
+    <div class="post-date m-phone">{{ post.date | date: "%B %Y" }}{% if post.categories contains 'recipes' %} · recipe{% endif %}</div>
     <h3 class="entry-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
     {% if post.excerpt %}
     <p class="entry-excerpt">{{ post.excerpt | strip_html | truncate: 200 }}</p>
     {% endif %}
+    <div class="read-on hue-{{ hue }}"><a href="{{ post.url | relative_url }}">read on</a></div>
   </div>
-  <div class="mg toc-date m-desktop" style="transform: rotate(-0.8deg);">{{ post.date | date: "%B %Y" }} · fol. {{ forloop.index }}</div>
+  <div class="mg toc-date m-desktop" style="transform: rotate(-0.8deg);">{{ post.date | date: "%B %Y" }} · fol. {{ forloop.index }}{% if post.categories contains 'recipes' %} · recipe{% endif %}</div>
   {% endfor %}
 
   {% if site.posts.size == 0 %}

@@ -64,6 +64,20 @@ Photos and video go in "plates" (a thin ink frame on the parchment):
 
 Alternate `plate-tilt-r` and `plate-tilt-l` so they don't lean the same way.
 
+### Add a recipe
+
+Recipes are blog posts with a different page. In the postmaker, switch the
+tab at the top left from Post to Recipe: the page becomes the recipe shape
+(title with region, period and source; the essay; a photo frame and margin
+note; the original in plain English; the stat boxes; ingredients beside the
+numbered steps; the note for the fighter). Type into it and click "Make
+recipe". Enter in an ingredient line adds a line; Enter at the end of a step
+adds a step; click or drop onto the frame for the photo.
+
+By hand: a recipe is a file in `_posts/` with `layout: recipe` and
+`categories: recipes`, its structured fields in the front matter and the
+essay as the body. `_archive/recipe-sample.md` shows every field.
+
 ### Add a batch note (Wares page)
 A batch note is a normal post with `categories: batch-notes` in the front
 matter; the Wares page lists them automatically.
@@ -104,6 +118,7 @@ This is unique to my site due to my affilation to UMASS
 │   ├── css/main.css     # All styles (the ruled-page system lives here)
 │   ├── img/             # Images, marginalia doodles, label art
 │   └── media/           # Video
+├── _layouts/recipe.html # Recipe page (a post with the cookbook's shape)
 ├── blog/index.html      # Blog contents page
 ├── wares/index.md       # Maź Maziarza, the family grease
 ├── index.md             # Home page
