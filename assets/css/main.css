@@ -221,7 +221,7 @@ body {
     column-gap: 36px;
     row-gap: var(--line);
   }
-  .cat-block { display: flex; flex-direction: column; align-items: flex-start; padding-top: 4px; padding-left: 10px; }
+  .cat-block { display: flex; flex-direction: column; align-items: flex-start; padding-top: 64px; padding-left: 10px; }
   .scroll-block { display: flex; flex-direction: column; justify-content: space-between; padding-top: 37px; padding-bottom: 8px; }
   .tavern-block { padding-top: 208px; }
   .pt-row { padding-top: var(--line); }
@@ -239,6 +239,10 @@ body {
   padding-top: 4px;
   color: var(--red);
 }
+
+/* the beat: setup on its own line, the cat in the pause, the payoff stepped right */
+.beat-setup { padding-left: 38px; }
+.beat-payoff { font-style: italic; padding-left: 52%; }
 
 /* a correction left standing */
 .strike {
@@ -333,7 +337,8 @@ body {
   opacity: 0.95;
 }
 
-.beer-arrow { position: absolute; left: 225px; top: 311px; overflow: visible; }
+.h4b { position: relative; }
+.beer-arrow { position: absolute; left: 225px; top: 100%; overflow: visible; }
 
 /* ═══════════════════════════════════════
    GENERAL TEXT STYLES
@@ -775,6 +780,9 @@ blockquote.original p { margin: 0; }
   .home-photo.m-phone { display: block; margin-bottom: var(--line); }
 
   .cat-phone { float: right; width: 96px; margin: 4px 0 4px 14px; transform: scaleX(-1) rotate(3deg); opacity: 0.95; }
+  .beat-row p { margin-bottom: 0; }
+  .beat-row .beat-setup { margin-top: 0; }
+  .beat-row .beat-payoff { padding-left: 30%; margin-bottom: var(--line); }
   .scroll-phone { float: right; width: 110px; margin: 4px 0 4px 14px; transform: rotate(-2.2deg); opacity: 0.95; }
   .jar-phone { float: right; width: 100px; margin: 4px 0 4px 14px; transform: rotate(2deg); opacity: 0.95; }
   .tavern-phone { display: block; width: 230px; margin: 10px auto 14px; transform: rotate(1.5deg); opacity: 0.95; }
