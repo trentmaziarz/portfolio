@@ -12,20 +12,20 @@ title: Home
     <img src="/assets/img/portrait.webp" alt="Trent Maziarz, drawn in ink and wash">
   </figure>
 
-  <p class="drop-cap">My name is Trent Maziarz. Computer scientist, Buhurt fighter, and the latest in a line of Polish tar-makers; my surname means dealer in tar, wheel grease, or cart grease. We left Poland to escape the trade, and arrived in an America where nobody needed wagon grease anymore, so the trade went to sleep in the name. After graduating with a CS degree, I returned to my <s class="strike">senses</s><span class="fix">roots</span>.</p>
+  <p class="drop-cap">My name is Trent Maziarz. On weekends I put on 60 pounds of armor and fight other grown adults. The name is Polish for a dealer in tar, wheel grease, or cart grease, and that is what my family was. They left Poland to get away from it, and America had no wagons to grease, so the trade went to sleep in the name. I took a computer science degree and went back to my <s class="strike">senses</s><span class="fix">roots</span>.</p>
   <div class="margin-item m-desktop">
     <img src="/assets/img/portrait.webp" alt="Trent Maziarz, drawn in ink and wash" style="width: 225px; transform: rotate(1.8deg) translateX(-10px);">
   </div>
 
-  <p><img class="cat-phone m-phone" src="/assets/img/marginalia/cat.webp" alt="a smirking cat, drawn in the margin">Most days I write code. At 21 I founded a non-profit called Trace Foundation, where we built our first product <a href="https://www.aitrace.org/">AI Trace</a>, a public record of how companies use AI. And in my free time I point computer science at history.</p>
+  <p><img class="cat-phone m-phone" src="/assets/img/marginalia/cat.webp" alt="a smirking cat, drawn in the margin">Most days I write code. At 21 I started a non-profit called Trace Foundation, and its first product, <a href="https://www.aitrace.org/">AI Trace</a>, is a public record of how companies are using AI. The rest of the time I point the same computer science at things that happened long ago.</p>
   <div class="margin-item m-desktop cat-block">
     <img src="/assets/img/marginalia/cat.webp" alt="a smirking cat, drawn in the margin" style="width: 106px; transform: scaleX(-1) rotate(3deg);">
     <div class="mg" style="transform: rotate(-2deg); margin: 2px 0 0 14px;">a digital history.</div>
   </div>
 
   <div class="pt-row">
-    <p><img class="scroll-phone m-phone" src="/assets/img/marginalia/scroll.webp" alt="doodle of a charred rolled scroll with rays passing through it">It started in a software engineering class at UMass Amherst. A professor mentioned a talk happening on campus: a researcher had finally unraveled the old <span class="gloss-wrap"><span class="gloss">Herculaneum, strictly</span>Pompeii scrolls</span> using X-rays and AI. For the entirety of history it was impossible; the scrolls were folded thinly among each other, as was the custom of the time, turned to ash and hardened to stone. Modern computer science made it possible to see another's life. Since then I keep testing what I can do myself.</p>
-    <p class="qline">Temporal network analyses of the Black Death along trade routes?</p>
+    <p><img class="scroll-phone m-phone" src="/assets/img/marginalia/scroll.webp" alt="doodle of a charred rolled scroll with rays passing through it">It started in a software engineering class at UMass Amherst. A professor mentioned a talk on campus. A researcher had taken the old <span class="gloss-wrap"><span class="gloss">Herculaneum, strictly</span>Pompeii</span> scrolls and gone at them with X-rays and AI. The scrolls had been rolled tight, as was the custom, then burned to ash and set hard as stone in the eruption, and nobody in history could open one. The talk was about reading one anyway, with the scroll still shut. Since then I keep a list, and these are the next two on it:</p>
+    <p class="qline">Temporal network analysis of the Black Death along the trade routes?</p>
     <p class="qline">NLP on old manuscripts?</p>
     <div class="mg m-phone" style="margin-top: 4px;">the hyperfixation found a permanent home.</div>
   </div>
@@ -35,8 +35,8 @@ title: Home
   </div>
 
   <div class="buhurt">
-    <p style="margin-bottom: 31px;">Portuguese and Polish ancestry would never have expected their kin to one day wear a suit of armor; historically we were quite poor on both sides, shoveling stables and greasing wagons. Instead I participate in Buhurt, meaning I dropped <span class="gloss-wrap"><span class="gloss">a lot</span>used-car money</span> to fight other grown adults in 60 pounds of armor until enough axe heads to the throat make the other side give out, or a leg breaks.</p>
-    <p>You'd think knowing my knees will be glass by 50 would have steered me away, but lowkey an ice-cold beer after makes it worth it for now, and the people I've met and the friends <span class="rl">I've made keep me standing</span>.</p>
+    <p style="margin-bottom: 31px;">My people were Portuguese on one side and Polish on the other, poor on both, and none of them owned armor. They shoveled stables and greased wagons. I spent <span class="gloss-wrap"><span class="gloss">a lot</span>used-car money</span> on a suit and went looking for other grown adults to fight. The sport is Buhurt, full contact in steel armor with blunt weapons, one on one or in teams. A bout ends when enough axe heads to the throat make the other side give out, or a leg breaks.</p>
+    <p>My knees will be glass by 50 and I have made my peace with that. I keep going back for the ice-cold beer at the end of the day, and for the people I have met doing it, the <span class="rl">friends who keep me standing</span>.</p>
     <div class="mg kinda">kinda ...</div>
     <img class="tavern-phone m-phone" src="/assets/img/marginalia/tavern.webp" alt="doodle of three friends at a tavern table under a string of lanterns; one leans in, taking the picture">
     <img class="knights" src="/assets/img/marginalia/knights.webp" alt="doodle of two knights fighting while a third lies flat on the ground">
@@ -49,7 +49,7 @@ title: Home
     <img src="/assets/img/marginalia/tavern.webp" alt="doodle of three friends at a tavern table under a string of lanterns; one leans in, taking the picture" style="width: 208px; transform: rotate(1.5deg) translateX(-10px);">
   </div>
 
-  <p><img class="jar-phone m-phone" src="/assets/img/marginalia/jar.webp" alt="A jar of tar grease, drawn as manuscript marginalia">Which brings it back to the tar. In my workshop I put up grease for armor and blades, and a version for leather if you see fit, from <a href="/wares/">an old family recipe</a>. I also make weapons and axes, but nobody in my bloodline was ever called the sword-maker, so they aren't as good as the grease.</p>
+  <p><img class="jar-phone m-phone" src="/assets/img/marginalia/jar.webp" alt="A jar of tar grease, drawn as manuscript marginalia">In my workshop I cook grease for armor and blades, and a softer one for leather. It is tar and fat and wax, from <a href="/wares/">an old family recipe</a>. I make weapons and axes too. My name has always meant grease-maker, and nobody who carried it was ever called the sword-maker. The axes come out fine. The grease comes out right.</p>
   <div class="margin-item m-desktop">
     <img src="/assets/img/marginalia/jar.webp" alt="A jar of tar grease, drawn as manuscript marginalia" style="width: 138px; transform: rotate(2deg) translateX(6px);">
   </div>
