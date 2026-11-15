@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="periwinkle">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+(function () {
+  var names = ['periwinkle', 'acid', 'red', 'pink', 'teal'];
+  var pick = null;
+  try { pick = new URLSearchParams(window.location.search).get('p'); } catch (e) {}
+  if (names.indexOf(pick) < 0) { pick = names[Math.floor(Math.random() * names.length)]; }
+  document.documentElement.setAttribute('data-palette', pick);
+})();
+</script>
+<title>{{ site.title }}</title>
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Crect x='-50' y='-50' width='100' height='100' fill='%23000'/%3E%3Cpath fill='%23b9b5ff' d='M0-44C3-9 9-3 44 0 9 3 3 9 0 44-3 9-9 3-44 0-9-3-3-9 0-44Z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800;900&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ '/assets/css/poster.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+{% seo title=false %}
+</head>
+<body>
+{{ content }}
+</body>
+</html>

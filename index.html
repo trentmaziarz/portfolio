@@ -1,0 +1,342 @@
+---
+permalink: /
+redirect_from:
+  - /wares/
+  - /blog/
+  - /blog/cool-photos/
+  - /blog/locked-and-loaded/
+  - /posts/
+---
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="chrome" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="soft"/>
+      <feSpecularLighting in="soft" surfaceScale="7" specularConstant="1.15" specularExponent="26" lighting-color="#ffffff" result="spec">
+        <feDistantLight azimuth="225" elevation="42"/>
+      </feSpecularLighting>
+      <feComposite in="spec" in2="SourceAlpha" operator="in" result="lit"/>
+      <feComposite in="SourceGraphic" in2="lit" operator="arithmetic" k1="0" k2="1" k3="0.85" k4="0"/>
+    </filter>
+    <filter id="chrome-sm" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="soft"/>
+      <feSpecularLighting in="soft" surfaceScale="5" specularConstant="1.1" specularExponent="24" lighting-color="#ffffff" result="spec">
+        <feDistantLight azimuth="225" elevation="42"/>
+      </feSpecularLighting>
+      <feComposite in="spec" in2="SourceAlpha" operator="in" result="lit"/>
+      <feComposite in="SourceGraphic" in2="lit" operator="arithmetic" k1="0" k2="1" k3="0.85" k4="0"/>
+    </filter>
+    <symbol id="star4" viewBox="-50 -50 100 100">
+      <path d="M0-50C3.5-10 10-3.5 50 0 10 3.5 3.5 10 0 50-3.5 10-10 3.5-50 0-10-3.5-3.5-10 0-50Z"/>
+    </symbol>
+    <symbol id="chev" viewBox="0 0 40 60">
+      <path d="M4 18 20 4 36 18M4 38 20 24 36 38M4 58 20 44 36 58" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="miter"/>
+    </symbol>
+    <symbol id="arrow" viewBox="0 0 24 24">
+      <path d="M6 4h2v2h2v2h2v2h2v2h-2v2h-2v2H8v2H6v-2h2v-2h2v-2h2v-2h-2V8H8V6H6z"/>
+    </symbol>
+    <symbol id="cross" viewBox="-50 -50 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle r="30"/>
+        <circle r="44" stroke-dasharray="3 6"/>
+        <path d="M0-50v26M0 24v26M-50 0h26M24 0h26"/>
+      </g>
+      <circle r="3" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="poster">
+  <canvas class="ground" id="ground" aria-hidden="true"></canvas>
+  <canvas class="tone" id="tone" aria-hidden="true"></canvas>
+  <div class="moire" aria-hidden="true"></div>
+  <div class="dots" aria-hidden="true"></div>
+
+  <svg class="floor" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <g stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"><line x1="332" y1="0" x2="-940" y2="300"/><line x1="346" y1="0" x2="-820" y2="300"/><line x1="360" y1="0" x2="-700" y2="300"/><line x1="374" y1="0" x2="-580" y2="300"/><line x1="388" y1="0" x2="-460" y2="300"/><line x1="402" y1="0" x2="-340" y2="300"/><line x1="416" y1="0" x2="-220" y2="300"/><line x1="430" y1="0" x2="-100" y2="300"/><line x1="444" y1="0" x2="20" y2="300"/><line x1="458" y1="0" x2="140" y2="300"/><line x1="472" y1="0" x2="260" y2="300"/><line x1="486" y1="0" x2="380" y2="300"/><line x1="500" y1="0" x2="500" y2="300"/><line x1="514" y1="0" x2="620" y2="300"/><line x1="528" y1="0" x2="740" y2="300"/><line x1="542" y1="0" x2="860" y2="300"/><line x1="556" y1="0" x2="980" y2="300"/><line x1="570" y1="0" x2="1100" y2="300"/><line x1="584" y1="0" x2="1220" y2="300"/><line x1="598" y1="0" x2="1340" y2="300"/><line x1="612" y1="0" x2="1460" y2="300"/><line x1="626" y1="0" x2="1580" y2="300"/><line x1="640" y1="0" x2="1700" y2="300"/><line x1="654" y1="0" x2="1820" y2="300"/><line x1="668" y1="0" x2="1940" y2="300"/><line x1="0" y1="3" x2="1000" y2="3"/><line x1="0" y1="13" x2="1000" y2="13"/><line x1="0" y1="30" x2="1000" y2="30"/><line x1="0" y1="55" x2="1000" y2="55"/><line x1="0" y1="87" x2="1000" y2="87"/><line x1="0" y1="128" x2="1000" y2="128"/><line x1="0" y1="177" x2="1000" y2="177"/><line x1="0" y1="234" x2="1000" y2="234"/></g>
+  </svg>
+
+  <svg class="globe" viewBox="-104 -104 208 208" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="0.9" transform="rotate(-18)">
+      <circle r="100"/>
+      <ellipse class="lat" cy="-85" rx="52.7" ry="9"/>
+      <ellipse class="lat" cy="-60" rx="80" ry="14"/>
+      <ellipse class="lat" cy="-30" rx="95.4" ry="17"/>
+      <ellipse class="lat" cy="0" rx="100" ry="18"/>
+      <ellipse class="lat" cy="30" rx="95.4" ry="17"/>
+      <ellipse class="lat" cy="60" rx="80" ry="14"/>
+      <ellipse class="lat" cy="85" rx="52.7" ry="9"/>
+      <ellipse class="mer m1" rx="100" ry="100"/>
+      <ellipse class="mer m2" rx="100" ry="100"/>
+      <ellipse class="mer m3" rx="100" ry="100"/>
+      <ellipse class="mer m4" rx="100" ry="100"/>
+      <ellipse class="mer m5" rx="100" ry="100"/>
+      <ellipse class="mer m6" rx="100" ry="100"/>
+      <path d="M0-104V104" stroke-dasharray="2 4"/>
+    </g>
+  </svg>
+
+  <div class="deco" aria-hidden="true">
+    <div class="panel code">
+      <div class="bar"><span>PROC/CH-03</span><i></i><i></i><i></i></div>
+      <pre>0001  struct carrier {
+0002    u8   ch    = 0x03;
+0003    f32  gain  = 0.997;
+0004    bool sync;
+0005  };
+0006  for (;;) {
+0007    scan(ch++ &amp; 0x7F);
+0008    if (!sync) hold();
+0009  }
+0010  <b class="caret">_</b></pre>
+    </div>
+
+    <div class="panel hex">
+      <div class="bar"><span>BUF 0x00FF</span><i></i></div>
+      <div class="hex-win"><pre class="hex-roll">0000  13C4 3A55 6A76 08EB
+0010  3F8A 1715 46B5 F518
+0020  E5FE BC98 0F38 1878
+0030  FBCA A8FC DEA0 7576
+0040  7B34 BEC2 4E0C A25A
+0050  E22F A3D1 E04D F2EB
+0060  A7B5 2EB9 A656 0A55
+0070  7C54 A639 10F8 394B
+0080  6A08 D704 23CD 4C6E
+0090  274A 43C2 7D72 AEEE
+00A0  3167 F353 E8FA 056F
+00B0  8213 A158 6CA0 A52F
+00C0  F43E 54F5 09BD 8B67
+00D0  AC27 A1D1 A1FB B8F0
+00E0  16B0 1760 B5C9 1628
+00F0  53F3 A262 F00E 4314
+0100  2113 E4AC B323 F7C8
+0110  9555 C728 1AFC D904
+0000  13C4 3A55 6A76 08EB
+0010  3F8A 1715 46B5 F518
+0020  E5FE BC98 0F38 1878
+0030  FBCA A8FC DEA0 7576
+0040  7B34 BEC2 4E0C A25A
+0050  E22F A3D1 E04D F2EB
+0060  A7B5 2EB9 A656 0A55
+0070  7C54 A639 10F8 394B
+0080  6A08 D704 23CD 4C6E
+0090  274A 43C2 7D72 AEEE
+00A0  3167 F353 E8FA 056F
+00B0  8213 A158 6CA0 A52F
+00C0  F43E 54F5 09BD 8B67
+00D0  AC27 A1D1 A1FB B8F0
+00E0  16B0 1760 B5C9 1628
+00F0  53F3 A262 F00E 4314
+0100  2113 E4AC B323 F7C8
+0110  9555 C728 1AFC D904</pre></div>
+    </div>
+
+    <span class="tag t-signal">SIGNAL</span>
+    <span class="tag t-carrier">NO CARRIER</span>
+    <span class="tag t-ch">CH-03</span>
+    <span class="tag t-addr">0x7F3A</span>
+    <span class="tag t-play"><svg viewBox="0 0 10 10"><path d="M2 1v8l7-4z"/></svg>PLAY SP 0:03:17</span>
+    <span class="tag t-sync">SYNC 99.7</span>
+    <span class="tag t-stack"><b>LOOP 03 LOOP 03</b><b>LOOP 03 LOOP 03</b><b>LOOP 03 LOOP 03</b></span>
+
+    <svg class="cross c1"><use href="#cross"/></svg>
+    <svg class="cross c2"><use href="#cross"/></svg>
+    <svg class="chevs v1"><use href="#chev"/></svg>
+    <svg class="chevs v2"><use href="#chev"/></svg>
+    <svg class="star s1"><use href="#star4"/></svg>
+    <svg class="star s2"><use href="#star4"/></svg>
+    <svg class="star s3"><use href="#star4"/></svg>
+    <svg class="star s4"><use href="#star4"/></svg>
+    <svg class="star s5"><use href="#star4"/></svg>
+    <div class="barcode"></div>
+    <div class="frame"><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <main class="stage">
+    <div class="mark-wrap">
+      <h1 class="mark"><span class="mark-line l1" data-text="TRENT"><span class="chrome">TRENT</span></span> <span class="mark-line l2" data-text="MAZIARZ"><span class="chrome">MAZIARZ</span></span></h1>
+      <div class="flare" aria-hidden="true"><svg><use href="#star4"/></svg></div>
+    </div>
+
+    <nav class="links" aria-label="Profiles">
+      <div class="bar" aria-hidden="true"><span>LINK/04</span><span class="bar-fill"></span><span>RX</span></div>
+      <ul>
+        <li><a href="https://github.com/trentmaziarz"><span class="idx" aria-hidden="true">01</span><span class="lbl">GitHub</span><svg class="mk" aria-hidden="true"><use href="#arrow"/></svg></a></li>
+        <li><a href="https://www.instagram.com/trentmaziarz"><span class="idx" aria-hidden="true">02</span><span class="lbl">Instagram</span><svg class="mk" aria-hidden="true"><use href="#arrow"/></svg></a></li>
+        <li><a href="https://www.linkedin.com/in/trentmaziarz"><span class="idx" aria-hidden="true">03</span><span class="lbl">LinkedIn</span><svg class="mk" aria-hidden="true"><use href="#arrow"/></svg></a></li>
+        <li><a href="https://www.aitrace.org/"><span class="idx" aria-hidden="true">04</span><span class="lbl">AI Trace</span><svg class="mk" aria-hidden="true"><use href="#arrow"/></svg></a></li>
+      </ul>
+    </nav>
+
+    <section class="ring" id="ring" aria-labelledby="ring-title">
+      <div class="ring-head">
+        <a id="ring-title" href="https://github.com/umacabal/umaring">UMass Webring</a>
+        <span class="ring-state" aria-hidden="true"></span>
+      </div>
+      <div class="ring-rows">
+        <a class="ring-a ring-prev" id="ring-prev" hidden><svg class="mk" aria-hidden="true"><use href="#arrow"/></svg><span class="ring-dir">Prev</span> <span class="ring-name"></span></a>
+        <a class="ring-a ring-next" id="ring-next" hidden><span class="ring-dir">Next</span> <span class="ring-name"></span><svg class="mk" aria-hidden="true"><use href="#arrow"/></svg></a>
+        <span class="ring-wait" aria-hidden="true"></span>
+      </div>
+    </section>
+  </main>
+
+  <div class="vname" aria-hidden="true">
+    <svg class="vglobe" viewBox="-52 -52 104 104"><g fill="none" stroke="currentColor" stroke-width="4"><circle r="46"/><ellipse rx="20" ry="46"/><path d="M-46 0h92M-40-22h80M-40 22h80"/></g></svg>
+    <span class="vtext">TRENT MAZIARZ</span>
+    <svg class="vchev"><use href="#chev"/></svg>
+  </div>
+
+  <div class="mosh k1" aria-hidden="true"></div>
+  <div class="mosh k2" aria-hidden="true"></div>
+  <div class="mosh k3" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  function rgb(hex) {
+    var h = hex.replace('#', '').trim();
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  function seeded(seed) {
+    return function () {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+  }
+
+  var bayer = [
+    0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26,
+    12, 44, 4, 36, 14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22,
+    3, 35, 11, 43, 1, 33, 9, 41, 51, 19, 59, 27, 49, 17, 57, 25,
+    15, 47, 7, 39, 13, 45, 5, 37, 63, 31, 55, 23, 61, 29, 53, 21
+  ];
+
+  function field(blobs, x, y) {
+    var v = 0;
+    for (var i = 0; i < blobs.length; i++) {
+      var b = blobs[i];
+      var dx = (x - b[0]) / b[2], dy = (y - b[1]) / (b[2] * b[4]);
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 1) { v += b[3] * Math.pow(1 - d, 1.5); }
+    }
+    return v;
+  }
+
+  function draw() {
+    var ground = document.getElementById('ground');
+    var tone = document.getElementById('tone');
+    if (!ground || !ground.getContext) { return; }
+    var W = window.innerWidth, H = window.innerHeight;
+    var phone = W < 760;
+    var css = getComputedStyle(root);
+    var ink = rgb(css.getPropertyValue('--ink') || '#8b84ff');
+    var deep = rgb(css.getPropertyValue('--ink-deep') || '#24216a');
+
+    /* 1-bit dither field, drawn at a third of the resolution and scaled up hard */
+    var cell = phone ? 3 : 4;
+    var gw = Math.ceil(W / cell), gh = Math.ceil(H / cell);
+    ground.width = gw; ground.height = gh;
+    var g = ground.getContext('2d');
+    var img = g.createImageData(gw, gh);
+    var px = img.data;
+    var blobs = phone
+      ? [[0.95, 0.24, 0.6, 0.85, 0.8], [0.05, 0.6, 0.5, 0.7, 1.2], [0.6, 1.0, 0.55, 0.75, 0.45]]
+      : [[0.8, 0.28, 0.34, 0.9, 1.3], [0.04, 0.74, 0.3, 0.75, 1.2], [0.52, 1.04, 0.4, 0.7, 0.45], [0.28, 0.0, 0.24, 0.6, 0.8]];
+    for (var y = 0; y < gh; y++) {
+      for (var x = 0; x < gw; x++) {
+        var v = field(blobs, x / gw, y / gh);
+        var t = (bayer[(y & 7) * 8 + (x & 7)] + 0.5) / 64;
+        var o = (y * gw + x) * 4;
+        if (v > 0.62 + t * 0.6) {
+          px[o] = ink[0]; px[o + 1] = ink[1]; px[o + 2] = ink[2]; px[o + 3] = 120;
+        } else if (v > t) {
+          px[o] = deep[0]; px[o + 1] = deep[1]; px[o + 2] = deep[2]; px[o + 3] = 255;
+        }
+      }
+    }
+    g.putImageData(img, 0, 0);
+
+    /* datamosh macroblocks: smeared runs of square blocks along a few bands */
+    var r = seeded(phone ? 91 : 17);
+    var bands = phone ? [0.06, 0.33, 0.58, 0.93] : [0.08, 0.27, 0.5, 0.88];
+    for (var k = 0; k < bands.length; k++) {
+      var by = Math.floor(bands[k] * gh);
+      var runs = 5 + Math.floor(r() * 5);
+      for (var j = 0; j < runs; j++) {
+        var size = 2 + Math.floor(r() * 4);
+        var bx = Math.floor(r() * gw);
+        var len = 3 + Math.floor(r() * 14);
+        var yy = by + Math.floor((r() - 0.5) * 18);
+        for (var m = 0; m < len; m++) {
+          var lvl = r();
+          g.fillStyle = lvl > 0.8 ? 'rgba(' + ink.join(',') + ',0.75)' : lvl > 0.35 ? 'rgb(' + deep.join(',') + ')' : '#000';
+          g.fillRect(bx + m * size, yy, size, size * (r() > 0.7 ? 2 : 1));
+        }
+      }
+    }
+
+    /* halftone field: dot radius follows the field value */
+    if (!tone || !tone.getContext) { return; }
+    tone.width = W; tone.height = H;
+    var c = tone.getContext('2d');
+    c.clearRect(0, 0, W, H);
+    var step = phone ? 6 : 7;
+    var hblobs = phone
+      ? [[0.15, 0.2, 0.55, 1.0, 0.9], [0.85, 0.7, 0.5, 1.0, 1.2], [0.3, 0.97, 0.5, 0.9, 0.4]]
+      : [[0.62, 0.1, 0.32, 1.0, 1.1], [0.22, 0.98, 0.3, 1.0, 0.6], [0.96, 0.62, 0.22, 1.0, 1.6], [0.02, 0.2, 0.2, 0.9, 1.4]];
+    c.fillStyle = 'rgba(' + ink.join(',') + ',0.85)';
+    c.beginPath();
+    for (var hy = step / 2; hy < H; hy += step) {
+      for (var hx = step / 2; hx < W; hx += step) {
+        var hv = Math.min(1, field(hblobs, hx / W, hy / H));
+        var rad = hv * step * 0.62;
+        if (rad > 0.45) {
+          c.moveTo(hx + rad, hy);
+          c.arc(hx, hy, rad, 0, Math.PI * 2);
+        }
+      }
+    }
+    c.fill();
+  }
+
+  draw();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(draw); }
+  var pending;
+  window.addEventListener('resize', function () {
+    clearTimeout(pending);
+    pending = setTimeout(draw, 160);
+  });
+
+  /* UMass Webring: fill previous and next; stay quiet when the ring is unreachable */
+  var ring = document.getElementById('ring');
+  function safe(url) { return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : null; }
+  function fill(row, site) {
+    var url = site && safe(site.url);
+    if (!url) { return false; }
+    row.href = url;
+    row.querySelector('.ring-name').textContent = String(site.name || url).slice(0, 40);
+    row.hidden = false;
+    return true;
+  }
+  if (window.fetch) {
+    ring.classList.add('is-pending');
+    fetch('https://umaring.github.io/trentmaziarz.json')
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        var ok = data && fill(document.getElementById('ring-prev'), data.prev);
+        ok = (data && fill(document.getElementById('ring-next'), data.next)) || ok;
+        ring.classList.remove('is-pending');
+        ring.classList.add(ok ? 'is-live' : 'is-off');
+      })
+      .catch(function () { ring.classList.remove('is-pending'); ring.classList.add('is-off'); });
+  } else {
+    ring.classList.add('is-off');
+  }
+})();
+</script>

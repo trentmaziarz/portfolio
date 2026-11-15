@@ -1,0 +1,10 @@
+{% assign home = page.redirect.to | remove_first: site.url %}{% if home == '' %}{% assign home = '/' %}{% endif %}<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<title>{{ site.title }}</title>
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url={{ home }}">
+<style>html { background: #000; color: #d9d6ff; font: 16px/1.4 monospace; }</style>
+<script>window.location.replace("{{ home }}");</script>
+<a href="{{ home }}" style="color: inherit">{{ site.title }}</a>
+</html>

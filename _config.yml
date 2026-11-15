@@ -1,26 +1,14 @@
 title: "Trent Maziarz"
-description: "Computer science, Buhurt, and the family grease."
+description: "Trent Maziarz"
 url: "https://trentmaziarz.com"
 baseurl: ""
-
-collections:
-  projects:
-    output: false
+theme: null
 
 defaults:
   - scope:
       path: ""
     values:
-      layout: default
-  - scope:
-      path: "_posts"
-    values:
-      layout: post
-  - scope:
-      path: ""
-      type: "projects"
-    values:
-      layout: project
+      layout: poster
 
 markdown: kramdown
 kramdown:
@@ -31,11 +19,12 @@ plugins:
   - jekyll-sitemap
   - jekyll-redirect-from
 
+redirect_from:
+  json: false
+
 exclude:
   - node_modules
   - README.md
   - Gemfile
   - Gemfile.lock
   - _archive
-  - postmaker.html
-  - postmaker.mjs
